@@ -269,19 +269,15 @@ public class MainActivity extends AppCompatActivity {
             ssK = new ArrayList<>();
             if(Start) {
                 Start = false;
-                int WochenTagVer = Weekdays.getWochenTagVertretung(doc);
-                int WochenTagHeute = Weekdays.getWochenTagHeute();
+                DayOfWeek WochenTagVer = DayOfWeek.getWochenTagVertretung(doc);
+                DayOfWeek WochenTagHeute = DayOfWeek.getWochenTagHeute();
                 Log.e("test", dayOfMonthStr);
                 //TODO Differenz Zeug nur, wenn nicht auf Button gedrückt
 
-                int Differenz = WochenTagHeute - WochenTagVer;
-                Integer Mod = (-4 + 5) % 5;
-                Log.e("Modulo", Mod.toString());
+                int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
 
                 if (Differenz > 0) {
-                    Seite = ((Differenz + 5) % 5) + 1;
-                    Log.e("test", "" + Seite + "");
-                    Log.e("test", Wochentag);
+                    Seite = (Differenz % 5) + 1;
                     doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
                     try {
                         doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html").get();
