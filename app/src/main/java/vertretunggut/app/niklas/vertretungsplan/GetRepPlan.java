@@ -210,10 +210,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private boolean repPlanForDayAvailable(Document repPlan){
-        return !getDayOfRepPlan(repPlan).equals("");
+        return !getTableTitleOfRepPage(repPlan).equals("");
     }
 
-    private String getDayOfRepPlan(Document repPlan){
+    private String getTableTitleOfRepPage(Document repPlan){
         return repPlan.select(".list-table-caption").text();
     }
 
@@ -222,7 +222,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void result) {
         listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
         Datum = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        Datum.setTitle(getDayOfRepPlan(repPlan)); // TODO Get Day here
+        Datum.setTitle(getTableTitleOfRepPage(repPlan)); // TODO Get Day here
 
         ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
         Rechts.setEnabled(true);
