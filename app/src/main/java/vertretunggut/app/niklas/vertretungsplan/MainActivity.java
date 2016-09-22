@@ -1,14 +1,20 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.os.AsyncTask;
+import android.widget.TextView;
 
 
 import org.jsoup.Jsoup;
@@ -278,6 +284,111 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // Locate the listview in listview_main.xml
+            listview = (GridView) findViewById(R.id.gridview_liste);
+            Datum = (ActionMenuItemView) findViewById(R.id.Tag);
+            Datum.setTitle(Tag);
+            // Pass the results into ListViewAdapter.java
+                /*for(int i = 0; i<ss.size();i++){
+                    TextView p = new TextView(MainActivity.this);
+                    p.setText(ss.get(i).toString());
+                    listview.addView(p);
+                }*/
+
+            ActionMenuItemView Rechts = (ActionMenuItemView) findViewById(R.id.nächster_Tag);
+            Rechts.setEnabled(true);
+
+            ActionMenuItemView Links = (ActionMenuItemView) findViewById(R.id.vorheriger_tag);
+            Links.setEnabled(true);
+
+
+
+
+
+            if(LeerInhalt && !Leer){
+
+                String genauer = "Es gibt keine Stunde für " +Klasse+" an diesem Tag.";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                final View rootView = inflater.inflate(R.layout.genaueritem, null);
+                TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
+                genauerT.setText(genauer);
+                ss.add("Nichts");
+
+                builder.setView(rootView)
+
+                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+
+                        .create().show();
+            }
+            if(Leer){
+                String genauer = "Diesen Tag gibt es (noch) keine Vertretungen.";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                final View rootView = inflater.inflate(R.layout.genaueritem, null);
+                TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
+                genauerT.setText(genauer);
+                if (buttonRechts) {
+
+                    Rechts.setEnabled(false);
+                } else {
+
+                    Links.setEnabled(false);
+                }
+                builder.setView(rootView)
+
+                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+
+                        .create().show();
+                Leer = false;
+            }
+            LeerInhalt = true;
+
+            adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.itemliste, R.id.item_liste, ss);
+            // Set the adapter to the ListView
+            listview.setAdapter(adapter);
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String genauer = ssK.get(position);
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                    final View rootView = inflater.inflate(R.layout.genaueritem, null);
+                    TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
+                    genauerT.setText(genauer);
+
+                    builder.setView(rootView)
+
+                            .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+
+                            .create().show();
+
+                }
+            });
+            //listview.getItemAtPosition()
+            // Close the progressdialog
+            mProgressDialog.dismiss();
         }
 
     }
