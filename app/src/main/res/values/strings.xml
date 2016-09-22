@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Vertretungsplan</string>
+    <string name="app_name">Vertretungen</string>
     <string name="no_internet_connection_possible">Es konnte keine Verbindung zum Internet aufgebaut werden.</string>
 </resources>
