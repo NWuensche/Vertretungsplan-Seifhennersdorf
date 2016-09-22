@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="vertretunggut.app.niklas.vertretungsplan.MainActivity">
+    tools:context="vertretunggut.app.niklas.vertretungsplan.MainActivity"
+    android:background="@drawable/school">
 
     <GridView
         android:layout_width="wrap_content"
