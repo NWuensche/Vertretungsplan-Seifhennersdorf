@@ -27,7 +27,6 @@ import java.util.ArrayList;
  */
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ProgressDialog loadingDialog;
-    private int Seite = 1;
     private ArrayList<String> ss = new ArrayList<>();
     private ArrayList<String> ssK = new ArrayList<>();
     private String Tag;
@@ -40,7 +39,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ArrayAdapter<String> adapter;
     private ActionMenuItemView Datum;
     private boolean buttonRechts = false;
-    private Document doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
     private MainActivity mainActivity;
 
 
@@ -57,7 +55,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     private void startLoadingDialog(){
         loadingDialog = new ProgressDialog(mainActivity);
-        loadingDialog.setTitle("Vertretungsplan")
+        loadingDialog.setTitle("Vertretungsplan");
         loadingDialog.setMessage("Laden...");
         loadingDialog.setIndeterminate(false);
         loadingDialog.show();
@@ -65,29 +63,26 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
-        try {
-            doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html").get();
-        } catch (IOException e) {
-            e.printStackTrace();
+        int firstSite = 1;
+        int currentSite = firstSite;
+        Document RepPlan = tryToGetRepPlanDocument(currentSite);
 
+        Tag = RepPlan.select(".list-table-caption").text();
 
-        }
-        Tag = doc.select(".list-table-caption").text();
         ss = new ArrayList<>();
         ssK.clear();
         ssK = new ArrayList<>();
         if(Start) {
             Start = false;
-            DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(doc);
+            DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(RepPlan);
             DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
             int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
 
             if (Differenz > 0) {
-                Seite = (Differenz % 5) + 1;
-                doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
+                currentSite = (Differenz % 5) + 1;
+                RepPlan = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html");
                 try {
-                    doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html").get();
+                    RepPlan = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html").get();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e("testNeuerPlan", "Fehler");
@@ -96,12 +91,12 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
                 }
 
 
-                Tag = doc.select(".list-table-caption").text();
+                Tag = RepPlan.select(".list-table-caption").text();
                 if (Tag.equals("")) {
-                    Seite = 1;
-                    doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
+                    currentSite = 1;
+                    RepPlan = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html");
                     try {
-                        doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html").get();
+                        RepPlan = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html").get();
                     } catch (IOException e) {
                         e.printStackTrace();
                         Log.e("testNeuerPlan", "Fehler");
@@ -109,7 +104,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
                     }
                 }
-                Tag = doc.select(".list-table-caption").text();
+                Tag = RepPlan.select(".list-table-caption").text();
             }
         }
 
@@ -123,7 +118,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if(Klasse.equals("")) {
             LeerInhalt = false;
-            Elements Vertretungsplan = doc.select(".list-table tr");
+            Elements Vertretungsplan = RepPlan.select(".list-table tr");
             int Wo = 1;
             for (Element Zeile : Vertretungsplan) {
                 Elements EinzelnZeile = Zeile.select("td");
@@ -161,7 +156,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
         else{
             LeerInhalt = true;
-            Elements Vertretungsplan = doc.select(".list-table tr");
+            Elements Vertretungsplan = RepPlan.select(".list-table tr");
 
             int Wo = 1;
             for (Element Zeile : Vertretungsplan) {
@@ -220,6 +215,19 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
         return null;
     }
+
+    private Document tryToGetRepPlanDocument(int SiteNumber){
+        Document doc = null; // TODO No null!
+
+        try {
+            doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return doc;
+    }
+
 
     @Override
     protected void onPostExecute(Void result) {
