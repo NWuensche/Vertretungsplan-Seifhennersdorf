@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
     private GridView listview;
@@ -45,6 +47,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    public int getWochenTagHeute(){
+        Calendar sCalendar = Calendar.getInstance();
+        String Wochentag = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+
+        return getWochenTagZahl("Freitag");
+    }
+
+    public int getWochenTagZahl(String Tag){
+        switch(Tag){
+            case "Montag":
+                return 1;
+            case "Dienstag":
+                return 2;
+            case "Mittwoch":
+                return 3;
+            case "Donnerstag":
+                return 4;
+            case "Freitag":
+                return 5;
+            case "Samstag":
+                return 6;
+            case "Sonntag":
+                return 6;
+            default:
+                Log.e("Fehler bei getWocheZahl","d");
+                return -1;
+
+        }
+    }
+
+    public int getWochenTagVertretung(){
+        Tag = doc.select(".list-table-caption").text();
+
+        StringTokenizer DatumMonat = new StringTokenizer(Tag);
+
+        String DatumVertrungsplan = DatumMonat.nextToken();
+        Log.e("testVer", DatumVertrungsplan);
+        return getWochenTagZahl(DatumVertrungsplan);
+        //TODO Zurück zu 001, wenn kein Vertretungsplan
+
     }
 
 
