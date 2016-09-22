@@ -33,11 +33,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
     private GridView listview;
@@ -237,47 +235,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public int getWochenTagHeute(){
-        Calendar sCalendar = Calendar.getInstance();
-        String Wochentag = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
 
-        return getWochenTagZahl("Freitag");
-    }
-
-    public int getWochenTagZahl(String Tag){
-        switch(Tag){
-            case "Montag":
-                return 1;
-            case "Dienstag":
-                return 2;
-            case "Mittwoch":
-                return 3;
-            case "Donnerstag":
-                return 4;
-            case "Freitag":
-                return 5;
-            case "Samstag":
-                return 6;
-            case "Sonntag":
-                return 6;
-            default:
-                Log.e("Fehler bei getWocheZahl","d");
-                return -1;
-
-        }
-    }
-
-    public int getWochenTagVertretung(){
-        Tag = doc.select(".list-table-caption").text();
-
-        StringTokenizer DatumMonat = new StringTokenizer(Tag);
-
-        String DatumVertrungsplan = DatumMonat.nextToken();
-        Log.e("testVer", DatumVertrungsplan);
-        return getWochenTagZahl(DatumVertrungsplan);
-        //TODO Zurück zu 001, wenn kein Vertretungsplan
-
-    }
 
     class Test extends AsyncTask<Void, Void, Void>{
 
@@ -311,8 +269,8 @@ public class MainActivity extends AppCompatActivity {
             ssK = new ArrayList<>();
             if(Start) {
                 Start = false;
-                int WochenTagVer = getWochenTagVertretung();
-                int WochenTagHeute = getWochenTagHeute();
+                int WochenTagVer = Weekdays.getWochenTagVertretung(doc);
+                int WochenTagHeute = Weekdays.getWochenTagHeute();
                 Log.e("test", dayOfMonthStr);
                 //TODO Differenz Zeug nur, wenn nicht auf Button gedrückt
 
