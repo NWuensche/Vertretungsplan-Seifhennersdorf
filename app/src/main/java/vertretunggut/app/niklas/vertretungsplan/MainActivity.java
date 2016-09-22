@@ -102,6 +102,20 @@ public class MainActivity extends AppCompatActivity {
     class Test extends AsyncTask<Void, Void, Void>{
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Create a progressdialog
+            mProgressDialog = new ProgressDialog(MainActivity.this);
+            // Set progressdialog title
+            mProgressDialog.setTitle("Vertretungsplan");
+            // Set progressdialog message
+            mProgressDialog.setMessage("Laden...");
+            mProgressDialog.setIndeterminate(false);
+            // Show progressdialog
+            mProgressDialog.show();
+        }
+
+        @Override
         protected Void doInBackground(Void... params) {
             doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + Seite + ".html");
             try {
