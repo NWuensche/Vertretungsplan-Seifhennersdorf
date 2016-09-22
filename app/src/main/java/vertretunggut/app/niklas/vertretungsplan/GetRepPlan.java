@@ -1,9 +1,7 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
  * Created by nwuensche on 22.09.16.
  */
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
-    private ProgressDialog mProgressDialog;
+    private ProgressDialog loadingDialog;
     private int Seite = 1;
     private ArrayList<String> ss = new ArrayList<>();
     private ArrayList<String> ssK = new ArrayList<>();
@@ -54,15 +52,15 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        // Create a progressdialog
-        mProgressDialog = new ProgressDialog(mainActivity);
-        // Set progressdialog title
-        mProgressDialog.setTitle("Vertretungsplan");
-        // Set progressdialog message
-        mProgressDialog.setMessage("Laden...");
-        mProgressDialog.setIndeterminate(false);
-        // Show progressdialog
-        mProgressDialog.show();
+        startLoadingDialog();
+    }
+
+    private void startLoadingDialog(){
+        loadingDialog = new ProgressDialog(mainActivity);
+        loadingDialog.setTitle("Vertretungsplan")
+        loadingDialog.setMessage("Laden...");
+        loadingDialog.setIndeterminate(false);
+        loadingDialog.show();
     }
 
     @Override
@@ -325,7 +323,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         });
         //listview.getItemAtPosition()
         // Close the progressdialog
-        mProgressDialog.dismiss();
+        loadingDialog.dismiss();
     }
 
 }
