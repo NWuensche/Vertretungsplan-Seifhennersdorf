@@ -269,11 +269,8 @@ public class MainActivity extends AppCompatActivity {
             ssK = new ArrayList<>();
             if(Start) {
                 Start = false;
-                DayOfWeek WochenTagVer = DayOfWeek.getWochenTagVertretung(doc);
-                DayOfWeek WochenTagHeute = DayOfWeek.getWochenTagHeute();
-                Log.e("test", dayOfMonthStr);
-                //TODO Differenz Zeug nur, wenn nicht auf Button gedrückt
-
+                DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(doc);
+                DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
                 int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
 
                 if (Differenz > 0) {

@@ -20,7 +20,6 @@ public enum DayOfWeek {
     WEEKEND(6),
     ERROR(7);
 
-
     private final int dayOfWeek;
 
     DayOfWeek(int dayOfWeek) {
@@ -31,7 +30,7 @@ public enum DayOfWeek {
         return dayOfWeek;
     }
 
-    public static DayOfWeek getWochenTagVertretung(Document repPlan){
+    public static DayOfWeek getDayOfWeekOfRepPlan(Document repPlan){
         String Tag = repPlan.select(".list-table-caption").text();
         StringTokenizer DatumMonat = new StringTokenizer(Tag);
 
@@ -64,7 +63,7 @@ public enum DayOfWeek {
         }
     }
 
-    public static DayOfWeek getWochenTagHeute() {
+    public static DayOfWeek getTodaysDayOfWeek() {
         Calendar sCalendar = Calendar.getInstance();
         String Wochentag = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
         return getParsedWeekday(Wochentag);
