@@ -2,8 +2,11 @@ package vertretunggut.app.niklas.vertretungsplan;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
@@ -61,6 +64,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(isNetworkAvailable()) {
+            t.execute();
+        }
+        else{
+            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+            LayoutInflater inflater2 = this.getLayoutInflater();
+            final View rootView2 = inflater2.inflate(R.layout.internetfehler, null);
+            builder2.setView(rootView2)
+                    .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+
+
+                        }
+                    })
+
+
+
+                    .create().show();
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public int getWochenTagHeute(){
