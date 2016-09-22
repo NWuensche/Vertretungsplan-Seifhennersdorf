@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.view.menu.ActionMenuItemView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,8 +28,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ProgressDialog loadingDialog;
     private ArrayList<String> ss = new ArrayList<>();
     private ArrayList<String> ssK = new ArrayList<>();
-    private String Tag;
-    private boolean Start = true;
+    private boolean firstTimeStarted = true;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
     private String Stunde = "";
@@ -39,11 +37,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ActionMenuItemView Datum;
     private MainActivity mainActivity;
     private int currentSite;
+    private Document repPlan;
 
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
+        repPlan = null; // TODO nice
     }
 
 
@@ -63,60 +63,24 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Document RepPlan = tryToGetRepPlanDocument(currentSite);
-
-        Tag = RepPlan.select(".list-table-caption").text();
-
         ss = new ArrayList<>();
-        ssK.clear();
         ssK = new ArrayList<>();
-        if(Start) {
-            Start = false;
-            DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(RepPlan);
-            DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
-            int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
-
-            if (Differenz > 0) {
-                currentSite = (Differenz % 5) + 1;
-                RepPlan = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html");
-                try {
-                    RepPlan = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html").get();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("testNeuerPlan", "Fehler");
-
-
-                }
-
-
-                Tag = RepPlan.select(".list-table-caption").text();
-                if (Tag.equals("")) {
-                    currentSite = 1;
-                    RepPlan = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html");
-                    try {
-                        RepPlan = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html").get();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e("testNeuerPlan", "Fehler");
-
-
-                    }
-                }
-                Tag = RepPlan.select(".list-table-caption").text();
-            }
+        Document repPlan = null; // TODO schöner
+        
+        if(firstTimeStarted) {
+            firstTimeStarted = false; // TODO wird ein Thread überhaupt mehr als einmal benutzt?
+            repPlan = getTodaysRepPlan();
         }
 
-        if (Tag.equalsIgnoreCase("")) {
+        if (!repPlanForDayAvailable(repPlan)) {
             ss.add("Nichts");
             Leer = true;
-
-
         }
 
 
         if(mainActivity.getKlasse().equals("")) {
             LeerInhalt = false;
-            Elements Vertretungsplan = RepPlan.select(".list-table tr");
+            Elements Vertretungsplan = repPlan.select(".list-table tr");
             int Wo = 1;
             for (Element Zeile : Vertretungsplan) {
                 Elements EinzelnZeile = Zeile.select("td");
@@ -154,7 +118,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
         else{
             LeerInhalt = true;
-            Elements Vertretungsplan = RepPlan.select(".list-table tr");
+            Elements Vertretungsplan = repPlan.select(".list-table tr");
 
             int Wo = 1;
             for (Element Zeile : Vertretungsplan) {
@@ -226,29 +190,45 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return doc;
     }
 
+    public Document getTodaysRepPlan(){
+        repPlan = tryToGetRepPlanDocument(currentSite);
+        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlan);
+        DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
+
+        int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
+
+        if (Differenz > 0) {
+            currentSite = (Differenz % 5) + 1;
+            repPlan = tryToGetRepPlanDocument(currentSite);
+            if (!repPlanForDayAvailable(repPlan)) {
+                int firstSite = 1; //TODO schöner?
+                currentSite = firstSite;
+                repPlan = tryToGetRepPlanDocument(currentSite);
+            }
+        }
+        return repPlan;
+    }
+
+    private boolean repPlanForDayAvailable(Document repPlan){
+        return !getDayOfRepPlan(repPlan).equals("");
+    }
+
+    private String getDayOfRepPlan(Document repPlan){
+        return repPlan.select(".list-table-caption").text();
+    }
+
 
     @Override
     protected void onPostExecute(Void result) {
-        // Locate the listview in listview_main.xml
         listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
         Datum = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        Datum.setTitle(Tag);
-        // Pass the results into ListViewAdapter.java
-                /*for(int i = 0; i<ss.size();i++){
-                    TextView p = new TextView(MainActivity.this);
-                    p.setText(ss.get(i).toString());
-                    listview.addView(p);
-                }*/
+        Datum.setTitle(getDayOfRepPlan(repPlan)); // TODO Get Day here
 
         ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
         Rechts.setEnabled(true);
 
         ActionMenuItemView Links = (ActionMenuItemView) mainActivity.findViewById(R.id.vorheriger_tag);
         Links.setEnabled(true);
-
-
-
-
 
         if(LeerInhalt && !Leer){
 
@@ -300,7 +280,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         LeerInhalt = true;
 
         adapter = new ArrayAdapter<String>(mainActivity, R.layout.itemliste, R.id.item_liste, ss);
-        // Set the adapter to the ListView
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -327,8 +306,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
             }
         });
-        //listview.getItemAtPosition()
-        // Close the progressdialog
         loadingDialog.dismiss();
     }
 
