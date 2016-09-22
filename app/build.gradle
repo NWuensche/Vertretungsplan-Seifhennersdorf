@@ -5,11 +5,11 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "vertretunggut.app.niklas.vertretungsplan"
+        applicationId "niklas.app.vertretunggut"
         minSdkVersion 10
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "2.0"
     }
     buildTypes {
         release {
