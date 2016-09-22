@@ -33,17 +33,17 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean Start = true;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
-    private String Klasse = "";
     private String Stunde = "";
     private GridView listview;
     private ArrayAdapter<String> adapter;
     private ActionMenuItemView Datum;
-    private boolean buttonRechts = false;
     private MainActivity mainActivity;
+    private int currentSite;
 
 
-    public GetRepPlan(MainActivity mainActivity) {
+    public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
+        this.currentSite = currentSite;
     }
 
 
@@ -63,8 +63,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        int firstSite = 1;
-        int currentSite = firstSite;
         Document RepPlan = tryToGetRepPlanDocument(currentSite);
 
         Tag = RepPlan.select(".list-table-caption").text();
@@ -116,7 +114,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
 
 
-        if(Klasse.equals("")) {
+        if(mainActivity.getKlasse().equals("")) {
             LeerInhalt = false;
             Elements Vertretungsplan = RepPlan.select(".list-table tr");
             int Wo = 1;
@@ -169,7 +167,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
                     }
 
-                    if(Info.text().toLowerCase().contains(Klasse.toLowerCase()) && !Info.text().toLowerCase().contains("i")&& !Info.text().toLowerCase().contains("0")&& !Info.text().toLowerCase().contains("h4")&& !Info.text().toLowerCase().contains("h1")){
+                    if(Info.text().toLowerCase().contains(mainActivity.getKlasse().toLowerCase()) && !Info.text().toLowerCase().contains("i")&& !Info.text().toLowerCase().contains("0")&& !Info.text().toLowerCase().contains("h4")&& !Info.text().toLowerCase().contains("h1")){
                         LeerInhalt = false;
                         ss.add(Stunde);
 
@@ -254,7 +252,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if(LeerInhalt && !Leer){
 
-            String genauer = "Es gibt keine Stunde für " +Klasse+" an diesem Tag.";
+            String genauer = "Es gibt keine Stunde für " + mainActivity.getKlasse() +" an diesem Tag.";
             AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
             LayoutInflater inflater = mainActivity.getLayoutInflater();
             final View rootView = inflater.inflate(R.layout.genaueritem, null);
@@ -280,7 +278,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             final View rootView = inflater.inflate(R.layout.genaueritem, null);
             TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
             genauerT.setText(genauer);
-            if (buttonRechts) {
+            if (mainActivity.getButtonRechts()) {
 
                 Rechts.setEnabled(false);
             } else {

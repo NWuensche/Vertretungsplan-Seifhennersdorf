@@ -1,40 +1,27 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ActionMenuItemView;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -50,8 +37,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Calendar sCalendar = Calendar.getInstance();
     private String Wochentag = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+    private int currentRepPlanSite;
+    private String Klasse = "";
+    private boolean buttonRechts = false;
 
-    GetRepPlan t = new GetRepPlan(this);
+    GetRepPlan repPlanGetter;
 
 
     @Override
@@ -59,8 +49,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int firstRepPlanSite = 1;
+        currentRepPlanSite = firstRepPlanSite;
+        repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
+
         if(isNetworkAvailable()) {
-            t.execute();
+            repPlanGetter.execute();
         }
         else{
             AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
@@ -111,15 +105,15 @@ public class MainActivity extends AppCompatActivity {
         //}
 
        //TODO Make this work again START HERE
-        /*if(id ==  R.id.vorheriger_tag) {
+        if(id == R.id.vorheriger_tag) {
 
             // if (!R.id.nächster_Tag.isEnabled()) Nächster.setEnabled(true);
-            Seite--;
+            currentRepPlanSite--;
             // if (Seite == 1) Vor.setEnabled(false);
             //   Button Rechts = (Button) findViewById(R.id.nächster_Tag);
             // Rechts.setEnabled(true);
             buttonRechts = false;
-            GetRepPlan t1 = new GetRepPlan();
+            GetRepPlan t1 = new GetRepPlan(this, currentRepPlanSite);
             t1.execute();
 
 
@@ -129,20 +123,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            Seite++;
+            currentRepPlanSite++;
             //Button Links = (Button) findViewById(R.id.vorheriger_tag);
             // Links.setEnabled(true);
             buttonRechts = true;
-            GetRepPlan t1 = new GetRepPlan();
+            GetRepPlan t1 = new GetRepPlan(this, currentRepPlanSite);
             t1.execute();
 
         }
         else if (id == R.id.Suchen) {
 
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             LayoutInflater inflater = this.getLayoutInflater();
             final View rootView = inflater.inflate(R.layout.dialog, null);
+            final MainActivity mainActivity = this;
             builder.setView(rootView)
                     .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
                         @Override
@@ -150,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                             EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
                             Klasse = EKlasse.getText().toString();
                             Klasse.replaceAll("\\s+","");
-                            GetRepPlan t1 = new GetRepPlan();
+                            GetRepPlan t1 = new GetRepPlan(mainActivity, currentRepPlanSite);
                             t1.execute();
 
 
@@ -219,10 +213,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }*/
+        }
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public String getKlasse(){
+        return Klasse;
+    }
+
+    public boolean getButtonRechts(){
+        return buttonRechts;
     }
 
 
