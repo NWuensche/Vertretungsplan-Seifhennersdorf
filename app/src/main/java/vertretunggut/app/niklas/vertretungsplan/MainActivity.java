@@ -7,6 +7,8 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.os.AsyncTask;
+
 
 import org.jsoup.nodes.Document;
 
@@ -88,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
         Log.e("testVer", DatumVertrungsplan);
         return getWochenTagZahl(DatumVertrungsplan);
         //TODO Zurück zu 001, wenn kein Vertretungsplan
+
+    }
+
+    class Test extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
 
     }
 
