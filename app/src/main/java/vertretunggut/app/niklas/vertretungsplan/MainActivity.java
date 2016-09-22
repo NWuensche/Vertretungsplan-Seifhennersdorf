@@ -14,22 +14,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-
-import java.util.Calendar;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private int currentRepPlanSite;
     private String Klasse = "";
     private boolean buttonRechts = false;
-
-    GetRepPlan repPlanGetter;
+    private GetRepPlan repPlanGetter;
 
 
     @Override
