@@ -39,19 +39,22 @@ public class MainActivity extends AppCompatActivity {
             repPlanGetter.execute();
         }
         else{
-            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-            LayoutInflater inflater2 = this.getLayoutInflater();
-            final View rootView2 = inflater2.inflate(R.layout.internetfehler, null);
-            builder2.setView(rootView2)
-                    .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.exit(0);
-                        }
-                    })
-                    .create()
-                    .show();
+            buildAndShowNoNetworkDialog();
         }
+    }
+
+    private void buildAndShowNoNetworkDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View rootView = getLayoutInflater().inflate(R.layout.internetfehler, null);
+        builder.setView(rootView)
+                .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        System.exit(0);
+                    }
+                })
+                .create()
+                .show();
     }
 
     private boolean networkAvailable() {

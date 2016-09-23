@@ -30,6 +30,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private MainActivity mainActivity;
     private int currentSite;
     private Document repPlanHTML;
+    private final int FIRST_SITE = 1;
 
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
@@ -118,8 +119,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             currentSite = (Difference % 5) + 1;
             maybeRepPlanHTML = getRepPlanDocument(currentSite);
             if (!repPlanForDayAvailable(maybeRepPlanHTML)) {
-                int firstSite = 1; //TODO schöner?
-                currentSite = firstSite;
+                currentSite = FIRST_SITE;
                 maybeRepPlanHTML = getRepPlanDocument(currentSite);
             }
         }
@@ -156,10 +156,11 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private void parseAndStoreDataInLine(Elements allDataInCurrentLine) {
         boolean inFirstRow = true;
         for (Element currentData : allDataInCurrentLine) {
-            if(!inFirstRow) {
-                parsedRepPlan.add(currentData.text());
+            if(inFirstRow) {
+                inFirstRow = false;
+                continue;
             }
-            inFirstRow = false;
+            parsedRepPlan.add(currentData.text());
         }
     }
 
@@ -172,7 +173,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private void storeWholeLine(Elements line){
         LeerInhalt = false;
         parsedRepPlan.add(""); // Format right
-        int currentRow = 1;
+        int currentRow = FIRST_SITE;
         for (Element data : line){
             if(currentRow > 2){
                 parsedRepPlan.add(data.text());
