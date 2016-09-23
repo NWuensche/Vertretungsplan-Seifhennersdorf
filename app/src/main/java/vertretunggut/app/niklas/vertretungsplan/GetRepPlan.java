@@ -76,8 +76,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         if(mainActivity.getKlasse().equals("")) {
             LeerInhalt = false;
             Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
-            parseRepPageTable(Vertretungsplan);
-
+            parseAndStoreRepPageTable(Vertretungsplan);
         }
         else{
             LeerInhalt = true;
@@ -165,19 +164,20 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return repPlan.select(".list-table tr");
     }
 
-    public void parseRepPageTable(Elements table) {
-        int startingLineNumber = 1;
-        int currentLineNumber = startingLineNumber;
+    public void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
             Elements allDataInCurrentLine = extract(currentLine);
-            //TODO Hier weiter
-            for (Element currentData : allDataInCurrentLine) {
-                if(currentLineNumber!=startingLineNumber){ //TODO Why?
-                    parsedRepPlan.add(currentData.text());
-                }
-                currentLineNumber++;
+            parseAndStoreDataInLine(allDataInCurrentLine);
+        }
+    }
+
+    private void parseAndStoreDataInLine(Elements allDataInCurrentLine) {
+        boolean inFirstRow = true;
+        for (Element currentData : allDataInCurrentLine) {
+            if(!inFirstRow) {
+                parsedRepPlan.add(currentData.text());
             }
-            currentLineNumber = startingLineNumber;
+            inFirstRow = false;
         }
     }
 
