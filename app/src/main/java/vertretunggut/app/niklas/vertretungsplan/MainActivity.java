@@ -69,23 +69,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Blöden Block weg
-        GetRepPlan newRepPlanGetter;
-        final MainActivity self = this;
 
         // TODO Alte Threads löschen?
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
                 currentRepPlanSite--;
                 buttonRechts = false;
-                newRepPlanGetter = new GetRepPlan(self, currentRepPlanSite);
-                newRepPlanGetter.execute();
+                restartRepPlanGetter();
                 break;
             case R.id.nächster_Tag:
                 currentRepPlanSite++;
                 buttonRechts = true;
-                newRepPlanGetter = new GetRepPlan(this, currentRepPlanSite);
-                newRepPlanGetter.execute();
+                restartRepPlanGetter();
                 break;
             case R.id.Suchen:
                 makeSearchDialog();
@@ -101,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     public void restartRepPlanGetter(){
         repPlanGetter.cancel(true);
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
-
+        repPlanGetter.execute();
     }
 
     public String getSearchString(){
@@ -127,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void buildSearchDialog(AlertDialog.Builder builder, final View rootView) {
-        final MainActivity self = this;
         builder.setView(rootView)
                 .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
                     @Override
@@ -135,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
                         search = EKlasse.getText().toString();
                         search.replaceAll("\\s+","");
-                        GetRepPlan t1 = new GetRepPlan(self, currentRepPlanSite);
-                        t1.execute();
+                        restartRepPlanGetter();
 
 
                     }
