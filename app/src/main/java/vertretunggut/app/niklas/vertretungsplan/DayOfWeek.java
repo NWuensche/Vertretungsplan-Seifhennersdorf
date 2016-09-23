@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
  * Created by nwuensche on 22.09.16.
  */
 public enum DayOfWeek {
+    TODAY(0),
     MONDAY (1),
     TUESDAY(2),
     WEDNESDAY(3),
@@ -35,13 +36,17 @@ public enum DayOfWeek {
         StringTokenizer DatumMonat = new StringTokenizer(Tag);
 
         String DatumVertrungsplan = DatumMonat.nextToken();
+        Log.e("tag", Tag);
         Log.e("testVer", DatumVertrungsplan);
+
         return getParsedWeekday(DatumVertrungsplan);
         //TODO Zurück zu 001, wenn kein Vertretungsplan
     }
 
     private static DayOfWeek getParsedWeekday(String Tag){
         switch(Tag){
+            case"Heute":
+                return DayOfWeek.TODAY;
             case "Montag":
                 return DayOfWeek.MONDAY;
             case "Dienstag":
