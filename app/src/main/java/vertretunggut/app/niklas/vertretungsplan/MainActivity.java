@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    //TODO Make this work again START HERE
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Blöden Block weg
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         final View rootView;
         final MainActivity self = this;
 
-        //TODO Data Leak when pressing butto
+        // TODO Alte Threads löschen?
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
                 currentRepPlanSite--;

@@ -59,9 +59,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         Document repPlan = null; // TODO schöner
-        // TODO Alte Threads löschen?
         if(mainActivity.isFirstThread()) {
-            Log.e("InFirstTimeStarted","");
             repPlan = getTodaysRepPlan();
         }
         else{
@@ -69,11 +67,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
 
         if (!repPlanForDayAvailable(repPlan)) {
-            parsedRepPlan.add("Nichts");
+            parsedRepPlan.add("Leer");
             Leer = true;
+            LeerInhalt = true;
+            return null;
         }
 
-        if(!mainActivityHasSchoolClass()) { // TODO schoolclass = searchengine?
+        if(!mainActivityHasSchoolClass()) { // TODO schoolclass = Es wird gesucht?
             LeerInhalt = false;
             Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
@@ -222,6 +222,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private void setUpFrame(ActionMenuItemView leftButton, ActionMenuItemView rightButton) {
 
         ActionMenuItemView date = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
+        String Log = getTableTitleOfRepPage(repPlanHTML);
         date.setTitle(getTableTitleOfRepPage(repPlanHTML));
 
         leftButton.setEnabled(true);
