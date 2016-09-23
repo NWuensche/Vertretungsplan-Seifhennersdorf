@@ -56,6 +56,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
+
         if(mainActivity.isFirstThread()) {
             repPlanHTML = getTodaysRepPlan();
         }
@@ -70,39 +71,26 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             return null;
         }
 
-        if(!mainActivityHasSchoolClass()) { // TODO schoolclass = Es wird gesucht?
+        if(SearchFieldEmpty()) { // TODO schoolclass = Es wird gesucht?
             LeerInhalt = false;
             Elements Vertretungsplan = getRepPageTable(repPlanHTML); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
-            //Search
             LeerInhalt = true;
             Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
-            int startingLine = 1;
-            int currentLine = 1;
-            String hour = "";
+            boolean isFirstLine = true;
             for (Element Zeile : Vertretungsplan) {
                 Elements EinzelnZeile = extract(Zeile);
-                if (currentLine == startingLine){
-                    currentLine++;
+                if(isFirstLine) {
+                    isFirstLine = false;
                     continue;
                 }
                 for (Element data : EinzelnZeile) {
                     if(dataContainsSearch(data.text())){
-                        // Add whole line to output table.
-                        LeerInhalt = false;
-                        parsedRepPlan.add(""); // Format right
-                        int currentRow = 1;
-                        for (Element addData : EinzelnZeile){
-                            if(currentRow > 2){
-                                parsedRepPlan.add(addData.text());
-                            }
-                            currentRow++;
-                        }
+                        storeWholeLine(EinzelnZeile);
                     }
                 }
-                    currentLine++;
             }
         }
         return null;
@@ -154,8 +142,8 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return repPlan.select(".list-table tr");
     }
 
-    private boolean mainActivityHasSchoolClass(){
-        return !mainActivity.getSchoolClass().equals("");
+    private boolean SearchFieldEmpty(){
+        return mainActivity.getSearchString().equals("");
     }
 
     public void parseAndStoreRepPageTable(Elements table) {
@@ -178,8 +166,19 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean dataContainsSearch(String data){
         data = data.toLowerCase();
         //TODO Why?
-        return data.contains(mainActivity.getSchoolClass().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
+        return data.contains(mainActivity.getSearchString().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
+    }
 
+    private void storeWholeLine(Elements line){
+        LeerInhalt = false;
+        parsedRepPlan.add(""); // Format right
+        int currentRow = 1;
+        for (Element data : line){
+            if(currentRow > 2){
+                parsedRepPlan.add(data.text());
+            }
+            currentRow++;
+        }
     }
     
     @Override
@@ -197,7 +196,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Leer = false;
         }
         else if(repPlanContainsDate() && !repPlanContainsContent()){
-            String title = "Es gibt keine Stunde für " + mainActivity.getSchoolClass() +" an diesem Tag.";
+            String title = "Es gibt keine Stunde für " + mainActivity.getSearchString() +" an diesem Tag.";
             buildDialog(title);
             parsedRepPlan.add("Leer");
         }

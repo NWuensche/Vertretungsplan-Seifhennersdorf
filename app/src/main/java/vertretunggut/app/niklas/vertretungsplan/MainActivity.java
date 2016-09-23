@@ -21,7 +21,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private int currentRepPlanSite;
-    private String schoolClass = "";
+    private String search = "";
     private boolean buttonRechts = false;
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
-                                schoolClass = EKlasse.getText().toString();
-                                schoolClass.replaceAll("\\s+","");
+                                search = EKlasse.getText().toString();
+                                search.replaceAll("\\s+","");
                                 GetRepPlan t1 = new GetRepPlan(self, currentRepPlanSite);
                                 t1.execute();
 
@@ -178,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public String getSchoolClass(){
-        return schoolClass;
+    public String getSearchString(){
+        return search;
     }
 
     public boolean getButtonRechts(){
