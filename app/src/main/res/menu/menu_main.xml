@@ -12,7 +12,7 @@
         android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/Suchen" android:title="Suchen"
         android:orderInCategory="100" app:showAsAction="always" />
-    <item android:id="@+id/Uber" android:title="About"
+    <item android:id="@+id/Uber" android:title="Über"
         android:orderInCategory="100" app:showAsAction="never" />
 
 
