@@ -2,11 +2,9 @@ package vertretunggut.app.niklas.vertretungsplan;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.view.menu.ActionMenuItemView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,15 +56,14 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Document repPlan = null; // TODO schöner
         if(mainActivity.isFirstThread()) {
-            repPlan = getTodaysRepPlan();
+            repPlanHTML = getTodaysRepPlan();
         }
         else{
-            repPlan = getRepPlanDocument(currentSite);
+            repPlanHTML = getRepPlanDocument(currentSite);
         }
 
-        if (!repPlanForDayAvailable(repPlan)) {
+        if (!repPlanForDayAvailable(repPlanHTML)) {
             parsedRepPlan.add("Leer");
             Leer = true;
             LeerInhalt = true;
@@ -75,27 +72,37 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if(!mainActivityHasSchoolClass()) { // TODO schoolclass = Es wird gesucht?
             LeerInhalt = false;
-            Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
+            Elements Vertretungsplan = getRepPageTable(repPlanHTML); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
+            //Search
             LeerInhalt = true;
-            Elements Vertretungsplan = repPlan.select(".list-table tr");
-
-            int Wo = 1;
+            Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
+            int startingLine = 1;
+            int currentLine = 1;
+            String hour = "";
             for (Element Zeile : Vertretungsplan) {
                 Elements EinzelnZeile = extract(Zeile);
-                String lesson = "";
+                if (currentLine == startingLine){
+                    currentLine++;
+                    continue;
+                }
                 for (Element data : EinzelnZeile) {
-                    if(dataIsLesson(Wo, data.text())){
-                        lesson = data.text();
-                    }
-                    if(dataHasValidFormat(data.text())){
+                    if(dataContainsSearch(data.text())){
+                        // Add whole line to output table.
                         LeerInhalt = false;
-                        parsedRepPlan.add(lesson);
+                        parsedRepPlan.add(""); // Format right
+                        int currentRow = 1;
+                        for (Element addData : EinzelnZeile){
+                            if(currentRow > 2){
+                                parsedRepPlan.add(addData.text());
+                            }
+                            currentRow++;
+                        }
                     }
                 }
-                    Wo++;
+                    currentLine++;
             }
         }
         return null;
@@ -114,21 +121,21 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     public Document getTodaysRepPlan(){
-        repPlanHTML = getRepPlanDocument(currentSite);
-        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlanHTML);
+        Document maybeRepPlanHTML = getRepPlanDocument(currentSite);
+        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
         DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
 
         int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
         if (Difference > 0) {
             currentSite = (Difference % 5) + 1;
-            repPlanHTML = getRepPlanDocument(currentSite);
-            if (!repPlanForDayAvailable(repPlanHTML)) {
+            maybeRepPlanHTML = getRepPlanDocument(currentSite);
+            if (!repPlanForDayAvailable(maybeRepPlanHTML)) {
                 int firstSite = 1; //TODO schöner?
                 currentSite = firstSite;
-                repPlanHTML = getRepPlanDocument(currentSite);
+                maybeRepPlanHTML = getRepPlanDocument(currentSite);
             }
         }
-        return repPlanHTML;
+        return maybeRepPlanHTML;
     }
 
     private boolean repPlanForDayAvailable(Document repPlan){
@@ -168,15 +175,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private boolean dataIsLesson(int row, String data){
-        if(row == 2){
-            int lesson = tryToParseInt(data);
-            return (row >= 1) && (row <= 8);
-        }
-        return false;
-
-    }
-
     private int tryToParseInt(String data){
         try{
             return Integer.parseInt(data);
@@ -186,7 +184,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private boolean dataHasValidFormat(String data){
+    private boolean dataContainsSearch(String data){
         data = data.toLowerCase();
         //TODO Why?
         return data.contains(mainActivity.getSchoolClass().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
@@ -211,7 +209,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         else if(repPlanContainsDate() && !repPlanContainsContent()){
             String title = "Es gibt keine Stunde für " + mainActivity.getSchoolClass() +" an diesem Tag.";
             buildDialog(title);
-            parsedRepPlan.add("Nichts");
+            parsedRepPlan.add("Leer");
         }
         LeerInhalt = true; // TODO Wozu? Für nächsten Thread?
 
@@ -222,7 +220,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private void setUpFrame(ActionMenuItemView leftButton, ActionMenuItemView rightButton) {
 
         ActionMenuItemView date = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        String Log = getTableTitleOfRepPage(repPlanHTML);
         date.setTitle(getTableTitleOfRepPage(repPlanHTML));
 
         leftButton.setEnabled(true);
