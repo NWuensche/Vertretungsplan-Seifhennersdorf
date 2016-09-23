@@ -17,7 +17,7 @@ public class RepPlan {
 
     public void add(String input) {
         if(toLongForScreen(input)) {
-            preview.add(input.substring(0, 4) + "..");
+            preview.add(input.substring(0, 3) + "..");
             fullText.add(input);
         }
         else {
@@ -27,7 +27,7 @@ public class RepPlan {
     }
 
     private boolean toLongForScreen(String input) {
-        return input.length() > 6;
+        return input.length() > 5;
     }
 
     public String getFullTextAt(int position) {
