@@ -21,7 +21,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private int currentRepPlanSite;
-    private String Klasse = "";
+    private String schoolClass = "";
     private boolean buttonRechts = false;
     private GetRepPlan repPlanGetter;
 
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         final View rootView;
         final MainActivity mainActivity;
 
+        //TODO Data Leak when pressing butto
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
                 currentRepPlanSite--;
@@ -100,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
-                                Klasse = EKlasse.getText().toString();
-                                Klasse.replaceAll("\\s+","");
+                                schoolClass = EKlasse.getText().toString();
+                                schoolClass.replaceAll("\\s+","");
                                 GetRepPlan t1 = new GetRepPlan(mainActivity, currentRepPlanSite);
                                 t1.execute();
 
@@ -177,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public String getKlasse(){
-        return Klasse;
+    public String getSchoolClass(){
+        return schoolClass;
     }
 
     public boolean getButtonRechts(){

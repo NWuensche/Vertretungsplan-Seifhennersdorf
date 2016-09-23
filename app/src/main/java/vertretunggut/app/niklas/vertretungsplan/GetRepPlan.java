@@ -28,10 +28,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean firstTimeStarted = true;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
-    private String Stunde = "";
-    private GridView listview;
-    private ArrayAdapter<String> adapter;
-    private ActionMenuItemView Datum;
     private MainActivity mainActivity;
     private int currentSite;
     private Document repPlanHTML;
@@ -73,49 +69,32 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Leer = true;
         }
 
-        if(mainActivity.getKlasse().equals("")) {
+        if(!mainActivityHasSchoolClass()) {
             LeerInhalt = false;
             Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
         }
-        else{
+        else {
             LeerInhalt = true;
             Elements Vertretungsplan = repPlan.select(".list-table tr");
 
             int Wo = 1;
             for (Element Zeile : Vertretungsplan) {
-                Elements EinzelnZeile = Zeile.select("td");
-
-                for (Element Info : EinzelnZeile) {
-
-                    if (Wo==2 && (Info.text().equals("1")|| Info.text().equals("2") || Info.text().equals("7") || Info.text().equals("8") || Info.text().equals("3") || Info.text().equals("4") || Info.text().equals("5") || Info.text().equals("6") )){
-                        Stunde = Info.text();
-
+                Elements EinzelnZeile = extract(Zeile);
+                String lesson = "";
+                for (Element data : EinzelnZeile) {
+                    if(dataIsLesson(Wo, data.text())){
+                        lesson = data.text();
                     }
-
-                    if(Info.text().toLowerCase().contains(mainActivity.getKlasse().toLowerCase()) && !Info.text().toLowerCase().contains("i")&& !Info.text().toLowerCase().contains("0")&& !Info.text().toLowerCase().contains("h4")&& !Info.text().toLowerCase().contains("h1")){
+                    if(dataHasValidFormat(data.text())){
                         LeerInhalt = false;
-                        parsedRepPlan.add(Stunde);
-                        int wo2 = 1;
-                        for(Element InfoAusgabe : EinzelnZeile){
-                            if(wo2>2){
-                                parsedRepPlan.add(InfoAusgabe.text());
-                            }
-
-                        }
-                        wo2++;
+                        parsedRepPlan.add(lesson);
                     }
                 }
-
-
                     Wo++;
-
-
             }
-                Wo=1;
         }
         return null;
-
     }
 
     private Document tryToGetRepPlanDocument(int SiteNumber){
@@ -164,6 +143,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return repPlan.select(".list-table tr");
     }
 
+    private boolean mainActivityHasSchoolClass(){
+        return !mainActivity.getSchoolClass().equals("");
+    }
+
     public void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
             Elements allDataInCurrentLine = extract(currentLine);
@@ -181,94 +164,115 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
+    private boolean dataIsLesson(int row, String data){
+        if(row == 2){
+            int lesson = tryToParseInt(data);
+            return (row >= 1) && (row <= 8);
+        }
+        return false;
+
+    }
+
+    private int tryToParseInt(String data){
+        try{
+            return Integer.parseInt(data);
+        }
+        catch(NumberFormatException e){
+            return 0; // TODO Besser
+        }
+    }
+
+    private boolean dataHasValidFormat(String data){
+        data = data.toLowerCase();
+        //TODO Why?
+        return data.contains(mainActivity.getSchoolClass().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
+
+    }
+
 
     @Override
     protected void onPostExecute(Void result) {
-        listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
-        Datum = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        Datum.setTitle(getTableTitleOfRepPage(repPlanHTML)); // TODO Get Day here
-
-        ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
-        Rechts.setEnabled(true);
-
         ActionMenuItemView Links = (ActionMenuItemView) mainActivity.findViewById(R.id.vorheriger_tag);
-        Links.setEnabled(true);
+        ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
 
-        if(LeerInhalt && !Leer){
+        setUpFrame(Links, Rechts);
 
-            String genauer = "Es gibt keine Stunde für " + mainActivity.getKlasse() +" an diesem Tag.";
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            LayoutInflater inflater = mainActivity.getLayoutInflater();
-            final View rootView = inflater.inflate(R.layout.genaueritem, null);
-            TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
-            genauerT.setText(genauer);
-            parsedRepPlan.add("Nichts");
+        if(!repPlanContainsDate() && !repPlanContainsContent()){
+            String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
+            buildDialog(title);
 
-            builder.setView(rootView)
-
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-
-                    .create().show();
-        }
-        if(Leer){
-            String genauer = "Diesen Tag gibt es (noch) keine Vertretungen.";
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            LayoutInflater inflater = mainActivity.getLayoutInflater();
-            final View rootView = inflater.inflate(R.layout.genaueritem, null);
-            TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
-            genauerT.setText(genauer);
-            if (mainActivity.getButtonRechts()) {
-
-                Rechts.setEnabled(false);
-            } else {
-
-                Links.setEnabled(false);
-            }
-            builder.setView(rootView)
-
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-
-                    .create().show();
+            disableLastPressedButton(Links, Rechts);
             Leer = false;
         }
-        LeerInhalt = true;
+        else if(repPlanContainsDate() && !repPlanContainsContent()){
+            String title = "Es gibt keine Stunde für " + mainActivity.getSchoolClass() +" an diesem Tag.";
+            buildDialog(title);
+            parsedRepPlan.add("Nichts");
+        }
+        LeerInhalt = true; // TODO Wozu? Für nächsten Thread?
 
-        adapter = new ArrayAdapter<String>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
+        setUpRepPlanInFrame();
+        closeLoadingDialog();
+    }
+
+    private void setUpFrame(ActionMenuItemView leftButton, ActionMenuItemView rightButton) {
+
+        ActionMenuItemView date = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
+        date.setTitle(getTableTitleOfRepPage(repPlanHTML));
+
+        leftButton.setEnabled(true);
+        rightButton.setEnabled(true);
+    }
+
+    private boolean repPlanContainsDate(){
+        return !Leer;
+    }
+
+    private boolean repPlanContainsContent(){
+        return !LeerInhalt;
+    }
+
+    private void buildDialog(String title){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        LayoutInflater inflater = mainActivity.getLayoutInflater();
+        final View rootView = inflater.inflate(R.layout.genaueritem, null);
+        TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
+        genauerT.setText(title);
+
+        builder.setView(rootView)
+
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+
+                .create().show();
+    }
+
+    private void disableLastPressedButton(ActionMenuItemView leftButton, ActionMenuItemView rightButton){
+        if (mainActivity.getButtonRechts()) {
+            rightButton.setEnabled(false);
+        } else {
+            leftButton.setEnabled(false);
+        }
+    }
+
+    private void setUpRepPlanInFrame(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
+        GridView listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String genauer = parsedRepPlan.getFullTextAt(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-                LayoutInflater inflater = mainActivity.getLayoutInflater();
-                final View rootView = inflater.inflate(R.layout.genaueritem, null);
-                TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
-                genauerT.setText(genauer);
-
-                builder.setView(rootView)
-
-                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-
-                        .create().show();
-
+                String title = parsedRepPlan.getFullTextAt(position);
+                buildDialog(title);
             }
         });
-        loadingDialog.dismiss();
     }
 
+    private void closeLoadingDialog(){
+        loadingDialog.dismiss();
+    }
 }
