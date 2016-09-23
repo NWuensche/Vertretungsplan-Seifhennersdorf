@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private String schoolClass = "";
     private boolean buttonRechts = false;
     private GetRepPlan repPlanGetter;
+    private boolean firstTimeStarted = true;
+
 
 
     @Override
@@ -75,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder;
         LayoutInflater inflater;
         final View rootView;
-        final MainActivity mainActivity;
+        final MainActivity self = this;
 
         //TODO Data Leak when pressing butto
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
                 currentRepPlanSite--;
                 buttonRechts = false;
-                newRepPlanGetter = new GetRepPlan(this, currentRepPlanSite);
+                newRepPlanGetter = new GetRepPlan(self, currentRepPlanSite);
                 newRepPlanGetter.execute();
                 break;
             case R.id.nächster_Tag:
@@ -95,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 builder = new AlertDialog.Builder(this);
                 inflater = this.getLayoutInflater();
                 rootView = inflater.inflate(R.layout.dialog, null);
-                mainActivity = this;
                 builder.setView(rootView)
                         .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
                             @Override
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
                                 schoolClass = EKlasse.getText().toString();
                                 schoolClass.replaceAll("\\s+","");
-                                GetRepPlan t1 = new GetRepPlan(mainActivity, currentRepPlanSite);
+                                GetRepPlan t1 = new GetRepPlan(self, currentRepPlanSite);
                                 t1.execute();
 
 
@@ -184,6 +185,12 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean getButtonRechts(){
         return buttonRechts;
+    }
+
+    public boolean isFirstThread(){
+        boolean firstTimeStartedTmp = firstTimeStarted;
+        firstTimeStarted = false;
+        return firstTimeStartedTmp;
     }
 
 

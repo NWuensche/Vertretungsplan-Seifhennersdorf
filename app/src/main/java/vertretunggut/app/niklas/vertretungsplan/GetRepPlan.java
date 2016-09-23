@@ -2,9 +2,11 @@ package vertretunggut.app.niklas.vertretungsplan;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.view.menu.ActionMenuItemView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +27,6 @@ import java.io.IOException;
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ProgressDialog loadingDialog;
     private RepPlan parsedRepPlan;
-    private boolean firstTimeStarted = true;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
     private MainActivity mainActivity;
@@ -36,7 +37,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
-        repPlanHTML = null; // TODO nice
+        repPlanHTML = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
         parsedRepPlan = new RepPlan();
     }
 
@@ -58,10 +59,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         Document repPlan = null; // TODO schöner
-        
-        if(firstTimeStarted) {
-            firstTimeStarted = false; // TODO wird ein Thread überhaupt mehr als einmal benutzt?
+        // TODO Alte Threads löschen?
+        if(mainActivity.isFirstThread()) {
+            Log.e("InFirstTimeStarted","");
             repPlan = getTodaysRepPlan();
+        }
+        else{
+            repPlan = getRepPlanDocument(currentSite);
         }
 
         if (!repPlanForDayAvailable(repPlan)) {
@@ -69,7 +73,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Leer = true;
         }
 
-        if(!mainActivityHasSchoolClass()) {
+        if(!mainActivityHasSchoolClass()) { // TODO schoolclass = searchengine?
             LeerInhalt = false;
             Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
@@ -97,8 +101,8 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    private Document tryToGetRepPlanDocument(int SiteNumber){
-        Document doc = null; // TODO No null!
+    private Document getRepPlanDocument(int SiteNumber){
+        Document doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO No null!
 
         try {
             doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
@@ -110,18 +114,18 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     public Document getTodaysRepPlan(){
-        repPlanHTML = tryToGetRepPlanDocument(currentSite);
+        repPlanHTML = getRepPlanDocument(currentSite);
         DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlanHTML);
         DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
 
         int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
         if (Difference > 0) {
             currentSite = (Difference % 5) + 1;
-            repPlanHTML = tryToGetRepPlanDocument(currentSite);
+            repPlanHTML = getRepPlanDocument(currentSite);
             if (!repPlanForDayAvailable(repPlanHTML)) {
                 int firstSite = 1; //TODO schöner?
                 currentSite = firstSite;
-                repPlanHTML = tryToGetRepPlanDocument(currentSite);
+                repPlanHTML = getRepPlanDocument(currentSite);
             }
         }
         return repPlanHTML;
