@@ -175,23 +175,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private int tryToParseInt(String data){
-        try{
-            return Integer.parseInt(data);
-        }
-        catch(NumberFormatException e){
-            return 0; // TODO Besser
-        }
-    }
-
     private boolean dataContainsSearch(String data){
         data = data.toLowerCase();
         //TODO Why?
         return data.contains(mainActivity.getSchoolClass().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
 
     }
-
-
+    
     @Override
     protected void onPostExecute(Void result) {
         ActionMenuItemView Links = (ActionMenuItemView) mainActivity.findViewById(R.id.vorheriger_tag);
