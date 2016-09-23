@@ -26,8 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Blöden Block weg
         GetRepPlan newRepPlanGetter;
-        AlertDialog.Builder builder;
-        LayoutInflater inflater;
-        final View rootView;
         final MainActivity self = this;
 
         // TODO Alte Threads löschen?
@@ -93,89 +88,20 @@ public class MainActivity extends AppCompatActivity {
                 newRepPlanGetter.execute();
                 break;
             case R.id.Suchen:
-                builder = new AlertDialog.Builder(this);
-                inflater = this.getLayoutInflater();
-                rootView = inflater.inflate(R.layout.dialog, null);
-                builder.setView(rootView)
-                        .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
-                                search = EKlasse.getText().toString();
-                                search.replaceAll("\\s+","");
-                                GetRepPlan t1 = new GetRepPlan(self, currentRepPlanSite);
-                                t1.execute();
-
-
-                            }
-                        })
-
-                        .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-
-                        .create().show();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                makeSearchDialog();
                 break;
             case R.id.Uber:
-                builder = new AlertDialog.Builder(this);
-                inflater = this.getLayoutInflater();
-                rootView = inflater.inflate(R.layout.uber, null);
-                builder.setView(rootView)
-
-                        .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-
-                        .create().show();
-                ImageView I = (ImageView) rootView.findViewById(R.id.CC);
-                I.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://creativecommons.org/licenses/by/3.0/"));
-                        startActivity(browserIntent);
-                    }
-                });
-
-                TextView T = (TextView) rootView.findViewById(R.id.CCText);
-                T.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://game-icons.net/"));
-                        startActivity(browserIntent);
-
-                    }
-                });
-                TextView T2 = (TextView) rootView.findViewById(R.id.mit);
-                T2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://jsoup.org/license"));
-                        startActivity(browserIntent);
-
-                    }
-                });
-                TextView T3 = (TextView) rootView.findViewById(R.id.mittext);
-                T3.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://jsoup.org/"));
-                        startActivity(browserIntent);
-
-                    }
-                });
+                buildAboutDialog();
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void restartRepPlanGetter(){
+        repPlanGetter.cancel(true);
+        repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
+
     }
 
     public String getSearchString(){
@@ -190,6 +116,104 @@ public class MainActivity extends AppCompatActivity {
         boolean firstTimeStartedTmp = firstTimeStarted;
         firstTimeStarted = false;
         return firstTimeStartedTmp;
+    }
+
+    private void makeSearchDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View rootView = getLayoutInflater().inflate(R.layout.dialog, null);
+
+        buildSearchDialog(builder, rootView);
+        showKeyboard();
+    }
+
+    private void buildSearchDialog(AlertDialog.Builder builder, final View rootView) {
+        final MainActivity self = this;
+        builder.setView(rootView)
+                .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
+                        search = EKlasse.getText().toString();
+                        search.replaceAll("\\s+","");
+                        GetRepPlan t1 = new GetRepPlan(self, currentRepPlanSite);
+                        t1.execute();
+
+
+                    }
+                })
+
+                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+
+                .create().show();
+    }
+
+    private void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    // TODO Mit anderen Dialogen eigene Klasse machen
+    private void buildAboutDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View rootView = getLayoutInflater().inflate(R.layout.uber, null);
+
+        addOKButton(builder, rootView);
+        addPicture(builder, rootView);
+        addTextViews(builder, rootView);
+
+    }
+
+    private void addOKButton(AlertDialog.Builder builder, final View rootView){
+        builder.setView(rootView)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void addPicture(AlertDialog.Builder builder, final View rootView){
+        ImageView I = (ImageView) rootView.findViewById(R.id.CC);
+        I.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://creativecommons.org/licenses/by/3.0/"));
+                startActivity(browserIntent);
+            }
+        });
+    }
+
+    private void addTextViews(AlertDialog.Builder builder, final View rootView) {
+        String urlCCText = "http://game-icons.net/";
+        String urlJSoupLicense = "http://jsoup.org/license";
+        String urlJSoup = "http://jsoup.org/";
+        int idCCText = R.id.CCText;
+        int idMIT = R.id.mit;
+        int idMITText = R.id.mittext;
+
+        addTextView(builder, rootView, idCCText, urlCCText);
+        addTextView(builder,rootView, idMIT, urlJSoupLicense);
+        addTextView(builder, rootView, idMITText, urlJSoup);
+    }
+
+    private void addTextView(AlertDialog.Builder builder, final View rootView, int id, final String url) {
+        TextView T = (TextView) rootView.findViewById(id);
+        T.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+
+            }
+        });
     }
 
 
