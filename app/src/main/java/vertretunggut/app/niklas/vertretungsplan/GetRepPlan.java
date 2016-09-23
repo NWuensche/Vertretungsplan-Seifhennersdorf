@@ -3,7 +3,6 @@ package vertretunggut.app.niklas.vertretungsplan;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.view.LayoutInflater;
@@ -19,15 +18,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by nwuensche on 22.09.16.
  */
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ProgressDialog loadingDialog;
-    private ArrayList<String> ss = new ArrayList<>();
-    private ArrayList<String> ssK = new ArrayList<>();
+    private RepPlan parsedRepPlan;
     private boolean firstTimeStarted = true;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
@@ -37,13 +34,14 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private ActionMenuItemView Datum;
     private MainActivity mainActivity;
     private int currentSite;
-    private Document repPlan;
+    private Document repPlanHTML;
 
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
-        repPlan = null; // TODO nice
+        repPlanHTML = null; // TODO nice
+        parsedRepPlan = new RepPlan();
     }
 
 
@@ -63,8 +61,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        ss = new ArrayList<>();
-        ssK = new ArrayList<>();
         Document repPlan = null; // TODO schöner
         
         if(firstTimeStarted) {
@@ -73,48 +69,15 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
 
         if (!repPlanForDayAvailable(repPlan)) {
-            ss.add("Nichts");
+            parsedRepPlan.add("Nichts");
             Leer = true;
         }
 
-
         if(mainActivity.getKlasse().equals("")) {
             LeerInhalt = false;
-            Elements Vertretungsplan = repPlan.select(".list-table tr");
-            int Wo = 1;
-            for (Element Zeile : Vertretungsplan) {
-                Elements EinzelnZeile = Zeile.select("td");
+            Elements Vertretungsplan = getRepPageTable(repPlan); //TODO wirklich mit Argument oder von global nehmen?
+            parseRepPageTable(Vertretungsplan);
 
-                for (Element Info : EinzelnZeile) {
-
-                    if(Wo!=1){
-                        if(mainActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                            if(Info.text().length()>6){
-                                ss.add(Info.text().substring(0,4) +"..");
-                                ssK.add(Info.text());
-                            }
-                            else{
-                                ss.add(Info.text());
-                                ssK.add(Info.text());
-                            }
-                        }
-                        else if(mainActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                            if(Info.text().length()>3){
-                                ss.add(Info.text().substring(0,1) +"..");
-                                ssK.add(Info.text());
-                            }
-                            else{
-                                ss.add(Info.text());
-                                ssK.add(Info.text());
-                            }
-                        }
-                    }
-                    Wo++;
-
-
-                }
-                Wo=1;
-            }
         }
         else{
             LeerInhalt = true;
@@ -133,49 +96,27 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
                     if(Info.text().toLowerCase().contains(mainActivity.getKlasse().toLowerCase()) && !Info.text().toLowerCase().contains("i")&& !Info.text().toLowerCase().contains("0")&& !Info.text().toLowerCase().contains("h4")&& !Info.text().toLowerCase().contains("h1")){
                         LeerInhalt = false;
-                        ss.add(Stunde);
-
-                        ssK.add(Stunde);
+                        parsedRepPlan.add(Stunde);
                         int wo2 = 1;
                         for(Element InfoAusgabe : EinzelnZeile){
                             if(wo2>2){
-
-                                if(mainActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                                    if(InfoAusgabe.text().length()>6){
-                                        ss.add(InfoAusgabe.text().substring(0,4) +"..");
-                                        ssK.add(InfoAusgabe.text());
-                                    }
-                                    else{
-                                        ss.add(InfoAusgabe.text());
-                                        ssK.add(InfoAusgabe.text());
-                                    }
-                                }
-                                else if(mainActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-                                    if(InfoAusgabe.text().length()>3){
-                                        ss.add(InfoAusgabe.text().substring(0,1) +"..");
-                                        ssK.add(InfoAusgabe.text());
-                                    }
-                                    else{
-                                        ss.add(InfoAusgabe.text());
-                                        ssK.add(InfoAusgabe.text());
-                                    }
-                                }
-
-
+                                parsedRepPlan.add(InfoAusgabe.text());
                             }
-                            wo2++;
+
                         }
+                        wo2++;
                     }
+                }
 
 
                     Wo++;
 
 
-                }
-                Wo=1;
             }
+                Wo=1;
         }
         return null;
+
     }
 
     private Document tryToGetRepPlanDocument(int SiteNumber){
@@ -191,22 +132,21 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     public Document getTodaysRepPlan(){
-        repPlan = tryToGetRepPlanDocument(currentSite);
-        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlan);
+        repPlanHTML = tryToGetRepPlanDocument(currentSite);
+        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlanHTML);
         DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
 
-        int Differenz = WochenTagHeute.getDifferenceTo(WochenTagVer);
-
-        if (Differenz > 0) {
-            currentSite = (Differenz % 5) + 1;
-            repPlan = tryToGetRepPlanDocument(currentSite);
-            if (!repPlanForDayAvailable(repPlan)) {
+        int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
+        if (Difference > 0) {
+            currentSite = (Difference % 5) + 1;
+            repPlanHTML = tryToGetRepPlanDocument(currentSite);
+            if (!repPlanForDayAvailable(repPlanHTML)) {
                 int firstSite = 1; //TODO schöner?
                 currentSite = firstSite;
-                repPlan = tryToGetRepPlanDocument(currentSite);
+                repPlanHTML = tryToGetRepPlanDocument(currentSite);
             }
         }
-        return repPlan;
+        return repPlanHTML;
     }
 
     private boolean repPlanForDayAvailable(Document repPlan){
@@ -217,12 +157,36 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return repPlan.select(".list-table-caption").text();
     }
 
+    private Elements extract(Element line) {
+        return line.select("td");
+    }
+
+    private Elements getRepPageTable(Document repPlan) {
+        return repPlan.select(".list-table tr");
+    }
+
+    public void parseRepPageTable(Elements table) {
+        int startingLineNumber = 1;
+        int currentLineNumber = startingLineNumber;
+        for (Element currentLine : table) {
+            Elements allDataInCurrentLine = extract(currentLine);
+            //TODO Hier weiter
+            for (Element currentData : allDataInCurrentLine) {
+                if(currentLineNumber!=startingLineNumber){ //TODO Why?
+                    parsedRepPlan.add(currentData.text());
+                }
+                currentLineNumber++;
+            }
+            currentLineNumber = startingLineNumber;
+        }
+    }
+
 
     @Override
     protected void onPostExecute(Void result) {
         listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
         Datum = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        Datum.setTitle(getTableTitleOfRepPage(repPlan)); // TODO Get Day here
+        Datum.setTitle(getTableTitleOfRepPage(repPlanHTML)); // TODO Get Day here
 
         ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
         Rechts.setEnabled(true);
@@ -238,7 +202,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             final View rootView = inflater.inflate(R.layout.genaueritem, null);
             TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
             genauerT.setText(genauer);
-            ss.add("Nichts");
+            parsedRepPlan.add("Nichts");
 
             builder.setView(rootView)
 
@@ -279,14 +243,12 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
         LeerInhalt = true;
 
-        adapter = new ArrayAdapter<String>(mainActivity, R.layout.itemliste, R.id.item_liste, ss);
+        adapter = new ArrayAdapter<String>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String genauer = ssK.get(position);
-
-
+                String genauer = parsedRepPlan.getFullTextAt(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
                 LayoutInflater inflater = mainActivity.getLayoutInflater();
                 final View rootView = inflater.inflate(R.layout.genaueritem, null);
