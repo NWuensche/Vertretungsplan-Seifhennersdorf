@@ -70,17 +70,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // TODO Alte Threads löschen?
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
-                currentRepPlanSite--;
-                buttonRechts = false;
-                restartRepPlanGetter();
+                previousDayButtonPressed();
                 break;
             case R.id.nächster_Tag:
-                currentRepPlanSite++;
-                buttonRechts = true;
-                restartRepPlanGetter();
+                nextDayButtonPressed();
                 break;
             case R.id.Suchen:
                 makeSearchDialog();
@@ -91,6 +86,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void previousDayButtonPressed(){
+        currentRepPlanSite--;
+        buttonRechts = false;
+        restartRepPlanGetter();
+    }
+
+    private void nextDayButtonPressed() {
+        currentRepPlanSite++;
+        buttonRechts = true;
+        restartRepPlanGetter();
     }
 
     public void restartRepPlanGetter(){
