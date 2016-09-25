@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 nextDayButtonPressed();
                 break;
             case R.id.Suchen:
-                makeSearchDialog();
+                new SearchDialog(this).buildDialog();
                 break;
             case R.id.Uber:
                 buildAboutDialog();
@@ -109,8 +109,12 @@ public class MainActivity extends AppCompatActivity {
         repPlanGetter.execute();
     }
 
-    public String getSearchString(){
+    public String getSearch(){
         return search;
+    }
+
+    public void setSearch(String search){
+        this.search = search;
     }
 
     public boolean getButtonRechts(){
@@ -121,43 +125,6 @@ public class MainActivity extends AppCompatActivity {
         boolean firstTimeStartedTmp = firstTimeStarted;
         firstTimeStarted = false;
         return firstTimeStartedTmp;
-    }
-
-    private void makeSearchDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View rootView = getLayoutInflater().inflate(R.layout.dialog, null);
-
-        buildSearchDialog(builder, rootView);
-        showKeyboard();
-    }
-
-    private void buildSearchDialog(AlertDialog.Builder builder, final View rootView) {
-        builder.setView(rootView)
-                .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditText EKlasse = (EditText) rootView.findViewById(R.id.editKlasse);
-                        search = EKlasse.getText().toString();
-                        search.replaceAll("\\s+","");
-                        restartRepPlanGetter();
-
-
-                    }
-                })
-
-                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-
-                .create().show();
-    }
-
-    private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     // TODO Mit anderen Dialogen eigene Klasse machen
