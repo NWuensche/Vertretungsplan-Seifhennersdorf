@@ -143,7 +143,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private boolean SearchFieldEmpty(){
-        return mainActivity.getSearchString().equals("");
+        return mainActivity.getSearch().equals("");
     }
 
     public void parseAndStoreRepPageTable(Elements table) {
@@ -167,7 +167,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean dataContainsSearch(String data){
         data = data.toLowerCase();
         //TODO Why?
-        return data.contains(mainActivity.getSearchString().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
+        return data.contains(mainActivity.getSearch().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
     }
 
     private void storeWholeLine(Elements line){
@@ -197,7 +197,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Leer = false;
         }
         else if(repPlanContainsDate() && !repPlanContainsContent()){
-            String title = "Es gibt keine Stunde für " + mainActivity.getSearchString() +" an diesem Tag.";
+            String title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
             buildDialog(title);
             parsedRepPlan.add("Leer");
         }
