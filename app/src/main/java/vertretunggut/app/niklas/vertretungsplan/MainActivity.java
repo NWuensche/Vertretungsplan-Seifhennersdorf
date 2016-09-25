@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 new SearchDialog(this).buildDialog();
                 break;
             case R.id.Uber:
-                buildAboutDialog();
+                new AboutDialog(this).buildDialog();
                 break;
         }
 
@@ -128,63 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO Mit anderen Dialogen eigene Klasse machen
-    private void buildAboutDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View rootView = getLayoutInflater().inflate(R.layout.uber, null);
 
-        addOKButton(builder, rootView);
-        addPicture(builder, rootView);
-        addTextViews(builder, rootView);
-
-    }
-
-    private void addOKButton(AlertDialog.Builder builder, final View rootView){
-        builder.setView(rootView)
-                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    private void addPicture(AlertDialog.Builder builder, final View rootView){
-        ImageView I = (ImageView) rootView.findViewById(R.id.CC);
-        I.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://creativecommons.org/licenses/by/3.0/"));
-                startActivity(browserIntent);
-            }
-        });
-    }
-
-    private void addTextViews(AlertDialog.Builder builder, final View rootView) {
-        String urlCCText = "http://game-icons.net/";
-        String urlJSoupLicense = "http://jsoup.org/license";
-        String urlJSoup = "http://jsoup.org/";
-        int idCCText = R.id.CCText;
-        int idMIT = R.id.mit;
-        int idMITText = R.id.mittext;
-
-        addTextView(builder, rootView, idCCText, urlCCText);
-        addTextView(builder,rootView, idMIT, urlJSoupLicense);
-        addTextView(builder, rootView, idMITText, urlJSoup);
-    }
-
-    private void addTextView(AlertDialog.Builder builder, final View rootView, int id, final String url) {
-        TextView T = (TextView) rootView.findViewById(id);
-        T.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-
-            }
-        });
-    }
 
 
 
