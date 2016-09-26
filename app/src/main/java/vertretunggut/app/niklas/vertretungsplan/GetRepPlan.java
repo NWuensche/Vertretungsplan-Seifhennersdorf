@@ -1,16 +1,11 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.view.menu.ActionMenuItemView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -185,14 +180,15 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if(!repPlanContainsDate() && !repPlanContainsContent()){
             String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
-            buildDialog(title);
+            new OKTextDialog(mainActivity, title).buildDialog();
 
             disableLastPressedButton(Links, Rechts);
             Leer = false;
         }
         else if(repPlanContainsDate() && !repPlanContainsContent()){
             String title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
-            buildDialog(title);
+            new OKTextDialog(mainActivity, title).buildDialog();
+
             parsedRepPlan.add("Leer");
         }
         LeerInhalt = true; // TODO Wozu? Für nächsten Thread?
@@ -218,24 +214,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return !LeerInhalt;
     }
 
-    private void buildDialog(String title){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-        LayoutInflater inflater = mainActivity.getLayoutInflater();
-        final View rootView = inflater.inflate(R.layout.genaueritem, null);
-        TextView genauerT = (TextView) rootView.findViewById(R.id.genauertextview);
-        genauerT.setText(title);
-
-        builder.setView(rootView)
-
-                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-
-                .create().show();
-    }
 
     private void disableLastPressedButton(ActionMenuItemView leftButton, ActionMenuItemView rightButton){
         if (mainActivity.getButtonRechts()) {
@@ -253,7 +231,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String title = parsedRepPlan.getFullTextAt(position);
-                buildDialog(title);
+                new OKTextDialog(mainActivity, title).buildDialog();
             }
         });
     }
