@@ -5,7 +5,7 @@ import android.app.ProgressDialog;
 /**
  * Created by nwuensche on 26.09.16.
  */
-public class LoadingDialog {
+public class LoadingDialog implements DialogBuilder{
     MainActivity activity;
     ProgressDialog loadingDialog;
 
@@ -13,13 +13,12 @@ public class LoadingDialog {
         this.activity = activity;
     }
 
-    public ProgressDialog buildDialog(){
+    public void buildDialog(){
         loadingDialog = new ProgressDialog(activity);
         loadingDialog.setTitle("Vertretungsplan");
         loadingDialog.setMessage("Laden...");
         loadingDialog.setIndeterminate(false);
         loadingDialog.show();
-        return loadingDialog;
     }
 
     public void close(){
