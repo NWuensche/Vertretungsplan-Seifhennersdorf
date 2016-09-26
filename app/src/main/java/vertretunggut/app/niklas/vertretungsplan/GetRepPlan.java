@@ -1,18 +1,13 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
 import android.os.AsyncTask;
-import android.support.v7.view.menu.ActionMenuItemView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.IOException;
 
 /**
  * Created by nwuensche on 22.09.16.
@@ -24,13 +19,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean LeerInhalt = false;
     private MainActivity mainActivity;
     private int currentSite;
-    private RepPlanDocument repPlanHTML;
+    private RepPlanDocumentDecorator repPlanHTML;
     private final int FIRST_SITE = 1;
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
-        repPlanHTML = new RepPlanDocument("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
+        repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
         parsedRepPlan = new RepPlan();
     }
 
@@ -47,10 +42,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
 
         if(mainActivity.isFirstThread()) {
-            repPlanHTML = RepPlanDocument.createTodaysDocument();
+            repPlanHTML = RepPlanDocumentDecorator.createTodaysDocument();
         }
         else{
-            repPlanHTML = RepPlanDocument.createDocument(currentSite);
+            repPlanHTML = RepPlanDocumentDecorator.createDocument(currentSite);
         }
 
         if (!repPlanHTML.repPlanAvailable()) {
@@ -70,7 +65,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
             boolean isFirstLine = true;
             for (Element Zeile : Vertretungsplan) {
-                Elements EinzelnZeile = RepPlanDocument.extract(Zeile);
+                Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
                 if(isFirstLine) {
                     isFirstLine = false;
                     continue;
@@ -93,7 +88,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     public void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
-            Elements allDataInCurrentLine = RepPlanDocument.extract(currentLine);
+            Elements allDataInCurrentLine = RepPlanDocumentDecorator.extract(currentLine);
             parseAndStoreDataInLine(allDataInCurrentLine);
         }
     }

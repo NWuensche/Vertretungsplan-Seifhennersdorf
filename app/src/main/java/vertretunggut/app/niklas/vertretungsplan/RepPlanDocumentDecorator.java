@@ -10,11 +10,11 @@ import java.io.IOException;
 /**
  * Created by nwuensche on 26.09.16.
  */
-public class RepPlanDocument extends Document{
+public class RepPlanDocumentDecorator extends Document{
 
     public static final int FIRST_SITE = 1;
 
-    public RepPlanDocument(String URL){
+    public RepPlanDocumentDecorator(String URL){
         super(URL);
     }
 
@@ -34,9 +34,9 @@ public class RepPlanDocument extends Document{
         return line.select("td");
     }
 
-    public static RepPlanDocument createTodaysDocument(){
+    public static RepPlanDocumentDecorator createTodaysDocument(){
         int currentSite = FIRST_SITE;
-        RepPlanDocument maybeRepPlanHTML = createDocument(currentSite);
+        RepPlanDocumentDecorator maybeRepPlanHTML = createDocument(currentSite);
         DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
         DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
 
@@ -52,11 +52,11 @@ public class RepPlanDocument extends Document{
         return maybeRepPlanHTML;
     }
 
-    public static RepPlanDocument createDocument(int SiteNumber){
-        RepPlanDocument doc = new RepPlanDocument("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html"); // TODO No null!
+    public static RepPlanDocumentDecorator createDocument(int SiteNumber){
+        RepPlanDocumentDecorator doc = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html"); // TODO No null!
 
         try {
-            doc = (RepPlanDocument) Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
+            doc = (RepPlanDocumentDecorator) Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
         } catch (IOException e) {
             e.printStackTrace();
         }
