@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         this.search = search;
     }
 
-    public boolean getButtonRechts(){
+    public boolean nextDayButtonLastPressed(){
         return buttonRechts;
     }
 

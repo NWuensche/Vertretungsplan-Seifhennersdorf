@@ -24,14 +24,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean LeerInhalt = false;
     private MainActivity mainActivity;
     private int currentSite;
-    private Document repPlanHTML;
+    private RepPlanDocument repPlanHTML;
     private final int FIRST_SITE = 1;
-
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
-        repPlanHTML = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
+        repPlanHTML = new RepPlanDocument("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
         parsedRepPlan = new RepPlan();
     }
 
@@ -48,13 +47,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
 
         if(mainActivity.isFirstThread()) {
-            repPlanHTML = getTodaysRepPlan();
+            repPlanHTML = RepPlanDocument.createTodaysDocument();
         }
         else{
-            repPlanHTML = getRepPlanDocument(currentSite);
+            repPlanHTML = RepPlanDocument.createDocument(currentSite);
         }
 
-        if (!repPlanForDayAvailable(repPlanHTML)) {
+        if (!repPlanHTML.repPlanAvailable()) {
             parsedRepPlan.add("Leer");
             Leer = true;
             LeerInhalt = true;
@@ -63,7 +62,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if(SearchFieldEmpty()) { // TODO schoolclass = Es wird gesucht?
             LeerInhalt = false;
-            Elements Vertretungsplan = getRepPageTable(repPlanHTML); //TODO wirklich mit Argument oder von global nehmen?
+            Elements Vertretungsplan = repPlanHTML.getRepPageTable(repPlanHTML); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
@@ -71,7 +70,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
             boolean isFirstLine = true;
             for (Element Zeile : Vertretungsplan) {
-                Elements EinzelnZeile = extract(Zeile);
+                Elements EinzelnZeile = RepPlanDocument.extract(Zeile);
                 if(isFirstLine) {
                     isFirstLine = false;
                     continue;
@@ -86,50 +85,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    private Document getRepPlanDocument(int SiteNumber){
-        Document doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO No null!
 
-        try {
-            doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return doc;
-    }
-
-    public Document getTodaysRepPlan(){
-        Document maybeRepPlanHTML = getRepPlanDocument(currentSite);
-        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
-        DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
-
-        int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
-        if (Difference > 0) {
-            currentSite = (Difference % 5) + 1;
-            maybeRepPlanHTML = getRepPlanDocument(currentSite);
-            if (!repPlanForDayAvailable(maybeRepPlanHTML)) {
-                currentSite = FIRST_SITE;
-                maybeRepPlanHTML = getRepPlanDocument(currentSite);
-            }
-        }
-        return maybeRepPlanHTML;
-    }
-
-    private boolean repPlanForDayAvailable(Document repPlan){
-        return !getTableTitleOfRepPage(repPlan).equals("");
-    }
-
-    private String getTableTitleOfRepPage(Document repPlan){
-        return repPlan.select(".list-table-caption").text();
-    }
-
-    private Elements extract(Element line) {
-        return line.select("td");
-    }
-
-    private Elements getRepPageTable(Document repPlan) {
-        return repPlan.select(".list-table tr");
-    }
 
     private boolean SearchFieldEmpty(){
         return mainActivity.getSearch().equals("");
@@ -137,7 +93,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     public void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
-            Elements allDataInCurrentLine = extract(currentLine);
+            Elements allDataInCurrentLine = RepPlanDocument.extract(currentLine);
             parseAndStoreDataInLine(allDataInCurrentLine);
         }
     }
@@ -173,16 +129,16 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     
     @Override
     protected void onPostExecute(Void result) {
-        ActionMenuItemView Links = (ActionMenuItemView) mainActivity.findViewById(R.id.vorheriger_tag);
-        ActionMenuItemView Rechts = (ActionMenuItemView) mainActivity.findViewById(R.id.nächster_Tag);
+        RepPlanFrame visualRepPlan = new RepPlanFrame(mainActivity);
 
-        setUpFrame(Links, Rechts);
+        String headerTitle = repPlanHTML.getTableTitle();
+        visualRepPlan.setUpFrame(headerTitle);
 
         if(!repPlanContainsDate() && !repPlanContainsContent()){
             String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
             new OKTextDialog(mainActivity, title).buildDialog();
 
-            disableLastPressedButton(Links, Rechts);
+            visualRepPlan.disableLastPressedButton();
             Leer = false;
         }
         else if(repPlanContainsDate() && !repPlanContainsContent()){
@@ -197,14 +153,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         loadingDialog.close();
     }
 
-    private void setUpFrame(ActionMenuItemView leftButton, ActionMenuItemView rightButton) {
-
-        ActionMenuItemView date = (ActionMenuItemView) mainActivity.findViewById(R.id.Tag);
-        date.setTitle(getTableTitleOfRepPage(repPlanHTML));
-
-        leftButton.setEnabled(true);
-        rightButton.setEnabled(true);
-    }
 
     private boolean repPlanContainsDate(){
         return !Leer;
@@ -215,13 +163,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
 
-    private void disableLastPressedButton(ActionMenuItemView leftButton, ActionMenuItemView rightButton){
-        if (mainActivity.getButtonRechts()) {
-            rightButton.setEnabled(false);
-        } else {
-            leftButton.setEnabled(false);
-        }
-    }
+
 
     private void setUpRepPlanInFrame(){
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
