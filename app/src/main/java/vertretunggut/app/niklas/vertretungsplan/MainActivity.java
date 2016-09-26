@@ -3,20 +3,13 @@ package vertretunggut.app.niklas.vertretungsplan;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,34 +28,15 @@ public class MainActivity extends AppCompatActivity {
         currentRepPlanSite = firstRepPlanSite;
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
 
-        if(networkAvailable()) {
+        if(NoNetworkDialog.isNetworkAvailable(this)) {
             repPlanGetter.execute();
         }
         else{
-            buildAndShowNoNetworkDialog();
+            new NoNetworkDialog(this).buildDialog();
         }
     }
 
-    private void buildAndShowNoNetworkDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View rootView = getLayoutInflater().inflate(R.layout.internetfehler, null);
-        builder.setView(rootView)
-                .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        System.exit(0);
-                    }
-                })
-                .create()
-                .show();
-    }
 
-    private boolean networkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void previousDayButtonPressed(){
+    public void previousDayButtonPressed() {
         currentRepPlanSite--;
         buttonRechts = false;
         restartRepPlanGetter();
@@ -126,11 +100,4 @@ public class MainActivity extends AppCompatActivity {
         firstTimeStarted = false;
         return firstTimeStartedTmp;
     }
-
-    // TODO Mit anderen Dialogen eigene Klasse machen
-
-
-
-
-
 }
