@@ -23,7 +23,7 @@ import java.io.IOException;
  * Created by nwuensche on 22.09.16.
  */
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
-    private ProgressDialog loadingDialog;
+    private LoadingDialog loadingDialog;
     private RepPlan parsedRepPlan;
     private boolean Leer = false;
     private boolean LeerInhalt = false;
@@ -44,16 +44,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        startLoadingDialog();
+        loadingDialog = new LoadingDialog(mainActivity);
+        loadingDialog.buildDialog();
     }
 
-    private void startLoadingDialog(){
-        loadingDialog = new ProgressDialog(mainActivity);
-        loadingDialog.setTitle("Vertretungsplan");
-        loadingDialog.setMessage("Laden...");
-        loadingDialog.setIndeterminate(false);
-        loadingDialog.show();
-    }
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -172,7 +166,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     private void storeWholeLine(Elements line){
         LeerInhalt = false;
-        parsedRepPlan.add(""); // Format right
+        parsedRepPlan.add(""); // To format right
         int currentRow = FIRST_SITE;
         for (Element data : line){
             if(currentRow > 2){
@@ -204,7 +198,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         LeerInhalt = true; // TODO Wozu? Für nächsten Thread?
 
         setUpRepPlanInFrame();
-        closeLoadingDialog();
+        loadingDialog.close();
     }
 
     private void setUpFrame(ActionMenuItemView leftButton, ActionMenuItemView rightButton) {
@@ -264,7 +258,4 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         });
     }
 
-    private void closeLoadingDialog(){
-        loadingDialog.dismiss();
-    }
 }

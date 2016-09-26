@@ -1,15 +1,9 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,13 +12,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean buttonRechts = false;
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
+    private final int FIRST_SITE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int firstRepPlanSite = 1;
+        int firstRepPlanSite = FIRST_SITE;
         currentRepPlanSite = firstRepPlanSite;
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
 
