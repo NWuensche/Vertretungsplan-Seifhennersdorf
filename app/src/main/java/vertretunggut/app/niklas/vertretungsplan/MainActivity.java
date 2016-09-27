@@ -54,12 +54,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
-            case R.id.previous_day:
-                headOfRepPlan.previousDayButtonPressed();
-                break;
-            case R.id.next_day:
-                headOfRepPlan.nextDayButtonPressed();
-                break;
             case R.id.Suchen:
                 new SearchDialog(this).buildDialog();
                 break;

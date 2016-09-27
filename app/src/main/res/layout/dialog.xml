@@ -16,16 +16,4 @@
         android:id="@+id/editKlasse"
         android:text="Nach was soll gesucht werden?"
         android:selectAllOnFocus="true"/>
-
-    <!--<Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bestätigen"
-        android:id="@+id/buttonOK" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Abbrechen"
-        android:id="@+id/buttonCancel" />-->
 </LinearLayout>

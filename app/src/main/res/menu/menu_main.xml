@@ -3,17 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:id="@+id/Tag" android:title="Datum"
-        android:orderInCategory="100" app:showAsAction="always" />
-
-    <item android:id="@+id/previous_day" android:title="Tag vorher"
-        android:orderInCategory="100" app:showAsAction="always" />
-    <item android:id="@+id/next_day" android:title="Tag nachher"
-        android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/Suchen" android:title="Suchen"
         android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/Uber" android:title="Über"
         android:orderInCategory="100" app:showAsAction="never" />
-
-
 </menu>
+
