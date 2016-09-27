@@ -124,7 +124,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         titleBar.enableAllButtons();
 
         if(nothingToShow()) {
-            headerTitle = "Leer";
+            headerTitle = "Kein Inhalt";
             createDialogAndMaybeDisableButton(titleBar);
         }
         else {

@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
-            case R.id.vorheriger_tag:
+            case R.id.previous_day:
                 headOfRepPlan.previousDayButtonPressed();
                 break;
-            case R.id.nächster_Tag:
+            case R.id.next_day:
                 headOfRepPlan.nextDayButtonPressed();
                 break;
             case R.id.Suchen:

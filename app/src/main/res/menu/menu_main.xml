@@ -6,9 +6,9 @@
     <item android:id="@+id/Tag" android:title="Datum"
         android:orderInCategory="100" app:showAsAction="always" />
 
-    <item android:id="@+id/vorheriger_tag" android:title="Tag vorher"
+    <item android:id="@+id/previous_day" android:title="Tag vorher"
         android:orderInCategory="100" app:showAsAction="always" />
-    <item android:id="@+id/nächster_Tag" android:title="Tag nachher"
+    <item android:id="@+id/next_day" android:title="Tag nachher"
         android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/Suchen" android:title="Suchen"
         android:orderInCategory="100" app:showAsAction="always" />

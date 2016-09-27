@@ -33,6 +33,7 @@ public class OKTextDialog implements DialogBuilder {
                     }
                 })
 
-                .create().show();
+                .create()
+                .show();
     }
 }

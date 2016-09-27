@@ -13,8 +13,8 @@ public class RepPlanFrame {
 
     public RepPlanFrame(MainActivity activity) {
         this.activity = activity;
-        prevDayButton = (ActionMenuItemView) activity.findViewById(R.id.vorheriger_tag);
-        nextDayButton = (ActionMenuItemView) activity.findViewById(R.id.nächster_Tag);
+        prevDayButton = (ActionMenuItemView) activity.findViewById(R.id.previous_day);
+        nextDayButton = (ActionMenuItemView) activity.findViewById(R.id.next_day);
     }
 
     public void enableAllButtons() {
