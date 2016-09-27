@@ -22,7 +22,6 @@ public class RepPlanFrame {
         prevDay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                // Click action
                 previousDayButtonPressed();
             }
         });
@@ -30,28 +29,25 @@ public class RepPlanFrame {
         nextDay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                // Click action
                 nextDayButtonPressed();
             }
         });
     }
 
     public void enableAllButtons() {
-        nextDay.setEnabled(true);
-        prevDay.setEnabled(true);
+        nextDay.show();
+        prevDay.show();
     }
 
     public void setTitle(String headerTitle){
-        /*ActionMenuItemView head = (ActionMenuItemView) activity.findViewById(R.id.Tag);
-        head.setTitle(headerTitle);*/
         activity.getSupportActionBar().setTitle(headerTitle);
     }
 
     public void disableLastPressedButton() {
         if (nextDayButtonLastPressed()) {
-            nextDay.setEnabled(false);
+            nextDay.hide();
         } else {
-            prevDay.setEnabled(false);
+            prevDay.hide();
         }
     }
 
