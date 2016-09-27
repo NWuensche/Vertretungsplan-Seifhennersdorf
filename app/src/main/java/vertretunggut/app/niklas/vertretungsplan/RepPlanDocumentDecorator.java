@@ -22,7 +22,7 @@ public class RepPlanDocumentDecorator extends Document{
         return select(".list-table-caption").text();
     }
 
-    public Elements getRepPageTable(Document repPlan) {
+    public Elements getRepPageTable() {
         return select(".list-table tr");
     }
 
