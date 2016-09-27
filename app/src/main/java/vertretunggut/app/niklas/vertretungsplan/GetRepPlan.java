@@ -9,6 +9,8 @@ import android.widget.GridView;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.Iterator;
+
 /**
  * Created by nwuensche on 22.09.16.
  */
@@ -38,6 +40,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
+        Elements repPlanTable;
 
         if(mainActivity.isFirstThread()) {
             repPlanHTML = RepPlanDocumentDecorator.createTodaysDocument();
@@ -51,30 +54,16 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             return null;
         }
 
+        repPlanTable = repPlanHTML.getRepPageTable();
+
         if(SearchFieldEmpty()) {
-            Elements Vertretungsplan = repPlanHTML.getRepPageTable();
-            parseAndStoreRepPageTable(Vertretungsplan);
+            parseAndStoreRepPageTable(repPlanTable);
         }
         else {
-            Elements Vertretungsplan = repPlanHTML.getRepPageTable();
-            boolean isFirstLine = true;
-            for (Element Zeile : Vertretungsplan) {
-                Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
-                if(isFirstLine) {
-                    isFirstLine = false;
-                    continue;
-                }
-                for (Element data : EinzelnZeile) {
-                    if(dataContainsSearch(data.text())){
-                        storeWholeLine(EinzelnZeile);
-                    }
-                }
-            }
+            startSearch(repPlanTable);
         }
         return null;
     }
-
-
 
     private boolean SearchFieldEmpty() {
         return mainActivity.getSearch().equals("");
@@ -98,10 +87,25 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
+    private void startSearch(Elements repPlanTable) {
+        boolean isFirstLine = true;
+        for (Element Zeile : repPlanTable) {
+            Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
+            if(isFirstLine) {
+                isFirstLine = false;
+                continue;
+            }
+            for (Element data : EinzelnZeile) {
+                if(dataContainsSearch(data.text())){
+                    storeWholeLine(EinzelnZeile);
+                }
+            }
+        }
+    }
+
     private boolean dataContainsSearch(String data) {
         data = data.toLowerCase();
-        //TODO Why?
-        return data.contains(mainActivity.getSearch().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
+        return data.contains(mainActivity.getSearch().toLowerCase());
     }
 
     private void storeWholeLine(Elements line) {
