@@ -31,8 +31,8 @@ public enum DayOfWeek {
         return dayOfWeek;
     }
 
-    public static DayOfWeek getDayOfWeekOfRepPlan(Document repPlan){
-        String Tag = repPlan.select(".list-table-caption").text();
+    public static DayOfWeek getDayOfWeekOfRepPlan(RepPlanDocumentDecorator repPlan){
+        String Tag = repPlan.getTableTitle();
         StringTokenizer DatumMonat = new StringTokenizer(Tag);
 
         String DatumVertrungsplan = DatumMonat.nextToken();

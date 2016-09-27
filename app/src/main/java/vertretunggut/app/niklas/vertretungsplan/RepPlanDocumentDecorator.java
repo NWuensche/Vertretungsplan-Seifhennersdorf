@@ -10,20 +10,25 @@ import java.io.IOException;
 /**
  * Created by nwuensche on 26.09.16.
  */
-public class RepPlanDocumentDecorator extends Document{
+public class RepPlanDocumentDecorator {
 
-    public static final int FIRST_SITE = 1;
+    private Document repPlan;
+    private static final int FIRST_SITE = 1;
 
-    public RepPlanDocumentDecorator(String URL){
-        super(URL);
+    public RepPlanDocumentDecorator(String URL) {
+        repPlan = new Document(URL);
+    }
+
+    public RepPlanDocumentDecorator(Document repPlan){
+        this.repPlan = repPlan;
     }
 
     public String getTableTitle(){
-        return select(".list-table-caption").text();
+        return repPlan.select(".list-table-caption").text();
     }
 
     public Elements getRepPageTable() {
-        return select(".list-table tr");
+        return repPlan.select(".list-table tr");
     }
 
     public boolean repPlanAvailable(){
@@ -53,14 +58,14 @@ public class RepPlanDocumentDecorator extends Document{
     }
 
     public static RepPlanDocumentDecorator createDocument(int SiteNumber){
-        RepPlanDocumentDecorator doc = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html"); // TODO No null!
+        Document doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html"); // TODO No null!
 
         try {
-            doc = (RepPlanDocumentDecorator) Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
+            doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").get();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return doc;
+        return new RepPlanDocumentDecorator(doc);
     }
 }

@@ -56,7 +56,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
-            Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
+            Elements Vertretungsplan = repPlanHTML.getRepPageTable();
             boolean isFirstLine = true;
             for (Element Zeile : Vertretungsplan) {
                 Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
