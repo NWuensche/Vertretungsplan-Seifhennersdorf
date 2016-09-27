@@ -19,11 +19,11 @@ public class RepPlanDocumentDecorator {
         repPlan = new Document(URL);
     }
 
-    public RepPlanDocumentDecorator(Document repPlan){
+    public RepPlanDocumentDecorator(Document repPlan) {
         this.repPlan = repPlan;
     }
 
-    public String getTableTitle(){
+    public String getTableTitle() {
         return repPlan.select(".list-table-caption").text();
     }
 
@@ -31,7 +31,7 @@ public class RepPlanDocumentDecorator {
         return repPlan.select(".list-table tr");
     }
 
-    public boolean repPlanAvailable(){
+    public boolean repPlanAvailable() {
         return !getTableTitle().equals("");
     }
 
@@ -39,7 +39,7 @@ public class RepPlanDocumentDecorator {
         return line.select("td");
     }
 
-    public static RepPlanDocumentDecorator createTodaysDocument(){
+    public static RepPlanDocumentDecorator createTodaysDocument() {
         int currentSite = FIRST_SITE;
         RepPlanDocumentDecorator maybeRepPlanHTML = createDocument(currentSite);
         DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
@@ -57,7 +57,7 @@ public class RepPlanDocumentDecorator {
         return maybeRepPlanHTML;
     }
 
-    public static RepPlanDocumentDecorator createDocument(int SiteNumber){
+    public static RepPlanDocumentDecorator createDocument(int SiteNumber) {
         Document doc = new Document("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html"); // TODO No null!
 
         try {

@@ -13,7 +13,7 @@ import android.view.View;
 public class NoNetworkDialog implements DialogBuilder{
     public MainActivity activity;
 
-    public NoNetworkDialog(MainActivity activity){
+    public NoNetworkDialog(MainActivity activity) {
         this.activity = activity;
     }
 

@@ -9,11 +9,11 @@ public class LoadingDialog implements DialogBuilder{
     MainActivity activity;
     ProgressDialog loadingDialog;
 
-    public LoadingDialog(MainActivity activity){
+    public LoadingDialog(MainActivity activity) {
         this.activity = activity;
     }
 
-    public void buildDialog(){
+    public void buildDialog() {
         loadingDialog = new ProgressDialog(activity);
         loadingDialog.setTitle("Vertretungsplan");
         loadingDialog.setMessage("Laden...");
@@ -21,7 +21,7 @@ public class LoadingDialog implements DialogBuilder{
         loadingDialog.show();
     }
 
-    public void close(){
+    public void close() {
         loadingDialog.dismiss();
     }
 }

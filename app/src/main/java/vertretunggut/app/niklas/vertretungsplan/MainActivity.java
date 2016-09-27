@@ -72,25 +72,25 @@ public class MainActivity extends AppCompatActivity {
         restartRepPlanGetter();
     }
 
-    public void restartRepPlanGetter(){
+    public void restartRepPlanGetter() {
         repPlanGetter.cancel(true);
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
         repPlanGetter.execute();
     }
 
-    public String getSearch(){
+    public String getSearch() {
         return search;
     }
 
-    public void setSearch(String search){
+    public void setSearch(String search) {
         this.search = search;
     }
 
-    public boolean nextDayButtonLastPressed(){
+    public boolean nextDayButtonLastPressed() {
         return buttonRechts;
     }
 
-    public boolean isFirstThread(){
+    public boolean isFirstThread() {
         boolean firstTimeStartedTmp = firstTimeStarted;
         firstTimeStarted = false;
         return firstTimeStartedTmp;

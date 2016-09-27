@@ -34,11 +34,11 @@ public class RepPlan {
         return fullText.get(position);
     }
 
-    public List<String> getPreviewList(){
+    public List<String> getPreviewList() {
         return preview;
     }
 
-    public boolean containsContent(){
+    public boolean containsContent() {
         return !preview.isEmpty();
     }
 }

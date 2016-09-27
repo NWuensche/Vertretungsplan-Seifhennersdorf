@@ -10,11 +10,11 @@ import android.widget.EditText;
 /**
  * Created by nwuensche on 25.09.16.
  */
-public class SearchDialog implements DialogBuilder{
+public class SearchDialog implements DialogBuilder {
 
     MainActivity activity;
 
-    public SearchDialog(MainActivity activity){
+    public SearchDialog(MainActivity activity) {
         this.activity = activity;
     }
 

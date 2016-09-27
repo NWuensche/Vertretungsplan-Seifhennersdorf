@@ -27,7 +27,7 @@ public class AboutDialog implements DialogBuilder {
         addTextViews(rootView);
     }
 
-    private void addOKButton(AlertDialog.Builder builder, final View rootView){
+    private void addOKButton(AlertDialog.Builder builder, final View rootView) {
         builder.setView(rootView)
                 .setNegativeButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -39,7 +39,7 @@ public class AboutDialog implements DialogBuilder {
                 .show();
     }
 
-    private void addPicture(final View rootView){
+    private void addPicture(final View rootView) {
         ImageView I = (ImageView) rootView.findViewById(R.id.CC);
         I.setOnClickListener(new View.OnClickListener() {
             @Override

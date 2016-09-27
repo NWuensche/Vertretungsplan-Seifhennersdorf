@@ -52,7 +52,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
 
         if(SearchFieldEmpty()) {
-            Elements Vertretungsplan = repPlanHTML.getRepPageTable(); //TODO wirklich mit Argument oder von global nehmen?
+            Elements Vertretungsplan = repPlanHTML.getRepPageTable();
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
@@ -76,7 +76,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
 
 
-    private boolean SearchFieldEmpty(){
+    private boolean SearchFieldEmpty() {
         return mainActivity.getSearch().equals("");
     }
 
@@ -98,17 +98,17 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private boolean dataContainsSearch(String data){
+    private boolean dataContainsSearch(String data) {
         data = data.toLowerCase();
         //TODO Why?
         return data.contains(mainActivity.getSearch().toLowerCase()) && !data.contains("i") && !data.contains("0")&& !data.contains("h4") && !data.contains("h1");
     }
 
-    private void storeWholeLine(Elements line){
+    private void storeWholeLine(Elements line) {
         parsedRepPlan.add(""); // To format right
         int currentRow = FIRST_SITE;
-        for (Element data : line){
-            if(currentRow > 2){
+        for (Element data : line) {
+            if(currentRow > 2) {
                 parsedRepPlan.add(data.text());
             }
             currentRow++;
@@ -122,13 +122,13 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         String headerTitle = repPlanHTML.getTableTitle();
         visualRepPlan.setUpFrame(headerTitle);
 
-        if(!repPlanHTML.repPlanAvailable()){
+        if(!repPlanHTML.repPlanAvailable()) {
             String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
             new OKTextDialog(mainActivity, title).buildDialog();
 
             visualRepPlan.disableLastPressedButton();
         }
-        else if(nothingForSearchFound()){
+        else if(nothingForSearchFound()) {
             String title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
             new OKTextDialog(mainActivity, title).buildDialog();
 
@@ -143,7 +143,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return repPlanHTML.repPlanAvailable() && !parsedRepPlan.containsContent();
     }
 
-    private void setUpRepPlanInFrame(){
+    private void setUpRepPlanInFrame() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
         GridView listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
         listview.setAdapter(adapter);

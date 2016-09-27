@@ -10,13 +10,13 @@ public class RepPlanFrame {
     private ActionMenuItemView prevDayButton;
     private ActionMenuItemView nextDayButton;
 
-    public RepPlanFrame(MainActivity activity){
+    public RepPlanFrame(MainActivity activity) {
         this.activity = activity;
         prevDayButton = (ActionMenuItemView) activity.findViewById(R.id.vorheriger_tag);
         nextDayButton = (ActionMenuItemView) activity.findViewById(R.id.nächster_Tag);
     }
 
-    public void setUpFrame(String headerTitle){
+    public void setUpFrame(String headerTitle) {
         ActionMenuItemView head = (ActionMenuItemView) activity.findViewById(R.id.Tag);
         head.setTitle(headerTitle);
 
@@ -24,8 +24,7 @@ public class RepPlanFrame {
         prevDayButton.setEnabled(true);
     }
 
-    //TODO richtig rum?
-    public void disableLastPressedButton(){
+    public void disableLastPressedButton() {
         if (activity.nextDayButtonLastPressed()) {
             nextDayButton.setEnabled(false);
         } else {

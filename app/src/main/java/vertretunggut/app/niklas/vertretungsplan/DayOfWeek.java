@@ -2,8 +2,6 @@ package vertretunggut.app.niklas.vertretungsplan;
 
 import android.util.Log;
 
-import org.jsoup.nodes.Document;
-
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -27,11 +25,11 @@ public enum DayOfWeek {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public int getDayOfWeek(){
+    public int getDayOfWeek() {
         return dayOfWeek;
     }
 
-    public static DayOfWeek getDayOfWeekOfRepPlan(RepPlanDocumentDecorator repPlan){
+    public static DayOfWeek getDayOfWeekOfRepPlan(RepPlanDocumentDecorator repPlan) {
         String Tag = repPlan.getTableTitle();
         StringTokenizer DatumMonat = new StringTokenizer(Tag);
 
@@ -40,10 +38,9 @@ public enum DayOfWeek {
         Log.e("testVer", DatumVertrungsplan);
 
         return getParsedWeekday(DatumVertrungsplan);
-        //TODO Zurück zu 001, wenn kein Vertretungsplan
     }
 
-    private static DayOfWeek getParsedWeekday(String Tag){
+    private static DayOfWeek getParsedWeekday(String Tag) {
         switch(Tag){
             case"Heute":
                 return DayOfWeek.TODAY;
@@ -74,7 +71,7 @@ public enum DayOfWeek {
         return getParsedWeekday(Wochentag);
     }
 
-    public int getDifferenceTo(DayOfWeek compare){
+    public int getDifferenceTo(DayOfWeek compare) {
         return dayOfWeek-compare.getDayOfWeek();
     }
 }
