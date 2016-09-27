@@ -2,7 +2,10 @@ package vertretunggut.app.niklas.vertretungsplan;
 
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -10,8 +13,7 @@ import java.util.StringTokenizer;
  * Created by nwuensche on 22.09.16.
  */
 public enum DayOfWeek {
-    TODAY(0),
-    MONDAY (1),
+    MONDAY(1),
     TUESDAY(2),
     WEDNESDAY(3),
     THURSDAY(4),
@@ -30,33 +32,55 @@ public enum DayOfWeek {
     }
 
     public static DayOfWeek getDayOfWeekOfRepPlan(RepPlanDocumentDecorator repPlan) {
-        String Tag = repPlan.getTableTitle();
-        StringTokenizer DatumMonat = new StringTokenizer(Tag);
-
-        String DatumVertrungsplan = DatumMonat.nextToken();
-        Log.e("tag", Tag);
-        Log.e("testVer", DatumVertrungsplan);
+        String title = repPlan.getTableTitle();
+        int DatumVertrungsplan = getParsedWeekDayNumber(title);
 
         return getParsedWeekday(DatumVertrungsplan);
     }
 
-    private static DayOfWeek getParsedWeekday(String Tag) {
-        switch(Tag){
-            case"Heute":
-                return DayOfWeek.TODAY;
-            case "Montag":
+    private static int getParsedWeekDayNumber(String titleTable) {
+        StringTokenizer itemsOfTitle = new StringTokenizer(titleTable);
+        itemsOfTitle.nextToken(); // Ignore shown Weekday, because "Heute" creates problems
+        String date = itemsOfTitle.nextToken();
+
+        Date parsedDate = parseStringToDate(date);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(parsedDate);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        return dayOfWeek;
+    }
+
+    private static Date parseStringToDate(String date){
+        Date dateParser = null; // TODO besser
+
+        try {
+            dateParser = new SimpleDateFormat("dd.MM.yyyy").parse(date);
+        }
+        catch(ParseException e) {
+            System.out.println(e);
+        }
+
+        return dateParser;
+    }
+
+    private static DayOfWeek getParsedWeekday(int dayOfWeek) {
+        // Caution: 1st day is Sunday
+        switch(dayOfWeek){
+            case 2:
                 return DayOfWeek.MONDAY;
-            case "Dienstag":
+            case 3:
                 return DayOfWeek.TUESDAY;
-            case "Mittwoch":
+            case 4:
                 return DayOfWeek.WEDNESDAY;
-            case "Donnerstag":
+            case 5:
                 return DayOfWeek.THURSDAY;
-            case "Freitag":
+            case 6:
                 return DayOfWeek.FRIDAY;
-            case "Samstag":
+            case 7:
                 return DayOfWeek.WEEKEND;
-            case "Sonntag":
+            case 1:
                 return DayOfWeek.WEEKEND;
             default:
                 Log.e("Error at getDayOfWeek","d");
@@ -66,9 +90,9 @@ public enum DayOfWeek {
     }
 
     public static DayOfWeek getTodaysDayOfWeek() {
-        Calendar sCalendar = Calendar.getInstance();
-        String Wochentag = sCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
-        return getParsedWeekday(Wochentag);
+        Calendar cal = Calendar.getInstance();
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        return getParsedWeekday(dayOfWeek);
     }
 
     public int getDifferenceTo(DayOfWeek compare) {
