@@ -4,7 +4,8 @@
     tools:context=".MainActivity">
 
     <item android:id="@+id/Suchen" android:title="Suchen"
-        android:orderInCategory="100" app:showAsAction="always" />
+        android:orderInCategory="100" app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_search"/>
     <item android:id="@+id/Uber" android:title="Über"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

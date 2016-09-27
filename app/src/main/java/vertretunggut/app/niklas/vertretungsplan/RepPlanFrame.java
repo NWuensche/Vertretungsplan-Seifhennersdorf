@@ -1,8 +1,6 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.view.menu.ActionMenuItemView;
 import android.view.View;
 
 /**
