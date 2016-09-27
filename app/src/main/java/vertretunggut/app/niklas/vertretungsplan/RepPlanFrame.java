@@ -9,11 +9,14 @@ public class RepPlanFrame {
     private MainActivity activity;
     private ActionMenuItemView prevDayButton;
     private ActionMenuItemView nextDayButton;
+    private static RepPlanFrame singleton = null;
+    private boolean nextDayButtonLastPressed;
 
     public RepPlanFrame(MainActivity activity) {
         this.activity = activity;
         prevDayButton = (ActionMenuItemView) activity.findViewById(R.id.vorheriger_tag);
         nextDayButton = (ActionMenuItemView) activity.findViewById(R.id.nächster_Tag);
+        nextDayButtonLastPressed = false;
     }
 
     public void setUpFrame(String headerTitle) {
@@ -32,4 +35,19 @@ public class RepPlanFrame {
         }
     }
 
+    public boolean nextDayButtonLastPressed() {
+        return nextDayButtonLastPressed;
+    }
+
+    public void previousDayButtonPressed() {
+        activity.decreaseCurrentRepPlanSite();
+        nextDayButtonLastPressed = false;
+        activity.restartRepPlanGetter();
+    }
+
+    public void nextDayButtonPressed() {
+        activity.increaseCurrentRepPlanSite();
+        nextDayButtonLastPressed = true;
+        activity.restartRepPlanGetter();
+    }
 }

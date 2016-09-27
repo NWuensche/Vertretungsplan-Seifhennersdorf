@@ -13,13 +13,14 @@ public class MainActivity extends AppCompatActivity {
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
     private final int FIRST_SITE = 1;
+    private RepPlanFrame headOfRepPlan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         int firstRepPlanSite = FIRST_SITE;
+
         currentRepPlanSite = firstRepPlanSite;
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
 
@@ -29,8 +30,20 @@ public class MainActivity extends AppCompatActivity {
         else{
             new NoNetworkDialog(this).buildDialog();
         }
+
+
+
+        headOfRepPlan = new RepPlanFrame(this);
+
     }
 
+    public void increaseCurrentRepPlanSite(){
+        currentRepPlanSite++;
+    }
+
+    public void decreaseCurrentRepPlanSite(){
+        currentRepPlanSite--;
+    }
 
 
     @Override
@@ -44,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
         switch(item.getItemId()){
             case R.id.vorheriger_tag:
-                previousDayButtonPressed();
+                headOfRepPlan.previousDayButtonPressed();
                 break;
             case R.id.nächster_Tag:
-                nextDayButtonPressed();
+                headOfRepPlan.nextDayButtonPressed();
                 break;
             case R.id.Suchen:
                 new SearchDialog(this).buildDialog();
@@ -60,17 +73,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void previousDayButtonPressed() {
-        currentRepPlanSite--;
-        buttonRechts = false;
-        restartRepPlanGetter();
-    }
 
-    private void nextDayButtonPressed() {
-        currentRepPlanSite++;
-        buttonRechts = true;
-        restartRepPlanGetter();
-    }
 
     public void restartRepPlanGetter() {
         repPlanGetter.cancel(true);
