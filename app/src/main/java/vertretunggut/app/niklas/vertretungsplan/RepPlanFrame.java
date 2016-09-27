@@ -27,9 +27,9 @@ public class RepPlanFrame {
     //TODO richtig rum?
     public void disableLastPressedButton(){
         if (activity.nextDayButtonLastPressed()) {
-            prevDayButton.setEnabled(false);
-        } else {
             nextDayButton.setEnabled(false);
+        } else {
+            prevDayButton.setEnabled(false);
         }
     }
 
