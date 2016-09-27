@@ -1,0 +1,767 @@
+/* ==========================================================================
+   DAVINCI HTML5 styles 
+   ========================================================================== */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+img {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+h1 {
+    font-family: "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+    font-size: 22px;
+	color: #016BC2; 
+    font-family: %HEADERFONT%, Helvetica, Helvetica Neue, Arial; 
+    font-size: %HEADERFONTSIZE%px;
+    font-weight: %HEADERFONTWEIGHT%;
+    font-style: %HEADERFONTSTYLE%;
+    color: %HEADERFONTCOLOR%;
+}
+
+body {
+    font-family: "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+    font-size: 14px;
+    line-height: 1.4;
+    font-family: %DEFAULTFONT%, "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+    font-size: %DEFAULTFONTSIZE%px;
+    font-weight: %DEFAULTFONTWEIGHT%;
+    font-style: %DEFAULTFONTSTYLE%;
+    color: %DEFAULTFONTCOLOR%;
+}
+
+.navbar-default {
+  background-color: transparent;
+  border-color: #e7e7e7;
+}
+.navbar-brand {
+    font-family: Helvetica, Helvetica Neue, Arial; 
+    font-size: 16px;
+    font-style: normal;
+}
+
+.main {
+    min-height: 600px;
+}
+
+.schedule-container {
+    padding-bottom: 22px;
+}
+
+.indent {
+    width: 90%;
+    margin: 0 8px;
+}
+
+.details, 
+.weeknav {
+	display: none;
+}
+
+ul {
+	padding:0;
+	margin:0;
+}
+
+nav  {
+    float: left;
+    width: 220px;
+	display: none;
+   }
+
+.copyright {
+}   
+
+/* ======================================
+   Side notes for calling out things
+   ====================================== */
+
+.callout {
+  font-family: "Segoe UI", Helvetica, Helvetica Neue, Arial;
+  font-family: %REMARKFONT%, "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+  font-size: %REMARKFONTSIZE%px;
+  font-weight: %REMARKFONTWEIGHT%;
+  font-style: %REMARKFONTSTYLE%;
+  color: %REMARKFONTCOLOR%;
+  margin: 20px 0;
+  padding: 15px 30px 15px 15px;
+  border-left: 5px solid #eee;
+}
+.callout h4 {
+  margin-top: 0;
+}
+.callout p:last-child {
+  margin-bottom: 0;
+}
+.callout code,
+.callout .highlight {
+  background-color: #fff;
+}
+ 
+.callout-danger {
+  background-color: #fcf2f2;
+  border-color: #dFb5b4;
+}
+.callout-warning {
+  background-color: #fefbed;
+  border-color: #f1e7bc;
+}
+.callout-info {
+  background-color: #f0f7fd;
+  border-color: #d0e3f0;
+}
+  
+/* ======================================
+   Week buttons
+   ====================================== */
+
+input.week ,
+input.thisweek ,
+input.selweek {
+    margin:0;
+	padding:0;
+    width: 2em; /*same as the height*/
+    height:2em; /*same as the width*/
+    background-color:transparent;
+    border:0;
+    color: black;
+    font-size:1em;
+    /*border-radius at half the size of the width and height*/
+    -webkit-border-radius: 1em;
+    -moz-border-radius: 1em;
+    border-radius: 1em;
+}
+input.week {
+    background-color:transparent;
+}
+input.thisweek {
+    background-color:#FF2E12;
+    border:1px solid #FF2E12; 
+    color:#fff;
+}
+input.selweek {
+    background-color:#016BC2;
+    border:1px solid #016BC2; 
+	color: white;
+}
+input.week:hover,
+input.selweek:hover,
+input.thisweek:hover{
+    background:black;
+    border:1px solid black;
+	color: white;
+}
+ 
+ /* ===================
+    Calendar/Kalender
+   =================== */
+
+.calendar h1  {
+   font-family: "Segoe UI", Helvetica, Helvetica Neue, Arial;
+   color:  #016BC2;
+   font-size: 22px;
+   font-family: %HEADERFONT%, "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+   font-size: %HEADERFONTSIZE%px;
+   font-style: %HEADERFONTSTYLE%px;
+   font-weight: %HEADERFONTWEIGHT%px;
+   color: %HEADERFONTCOLOR%;
+   margin-bottom: 2px;
+}
+ 
+.calendar h2  {
+   font-family: "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+   font-size: 18px;
+   color:  #016BC2;
+   font-family: %HEADERFONT%, "Segoe UI", Helvetica, Helvetica Neue, Arial; 
+   font-size: %HEADERFONTSIZE%px;
+   font-style: %HEADERFONTSTYLE%px;
+   font-weight: %HEADERFONTWEIGHT%px;
+   color: %HEADERFONTCOLOR%;
+   margin-bottom: 4px;
+}
+
+.month li {
+	border:0;
+	display:inline-block;
+}
+
+.month ul { 
+	padding:0;
+	margin:0;
+	width:800px;
+	list-style:none;
+	margin-bottom:2px;
+	overflow:hidden;
+	border-top:1px solid #016BC2; 
+}
+
+.month li:last-child { 
+	list-style:none;
+	border-bottom:1px solid #016BC2;  
+}
+
+.weekday {
+	font-size: 1.4em;
+	color: #016BC2;  
+	width: 30px;
+}
+
+.day-nr {
+	font-size: 1.5em;
+	color: #016BC2;  
+	width: 30px;
+}
+.weekday ,
+.time, 
+.event-caption, 
+.event-text { 
+	color: black;  
+}	
+
+.event ul { 
+	list-style:none;
+	margin-bottom:0px;
+}
+
+.event li { width:25%; 
+}
+.event li:nth-child(1) { width:8%; }
+.event li:nth-child(2) { width:5%; }
+.event li:nth-child(3) { width:5%; }
+.event li:nth-child(4) { width:40%; }
+.event li:nth-child(5) { width:40%; }
+.event li:last-child { border-bottom:0px; }
+
+ /* ===================
+    White Theme
+   =================== */
+
+.header-container a {
+    color: white;
+}
+
+.header-container a:visited {
+    color: white;
+}
+
+.header-container,
+.footer-container {
+    background: white;
+	display: none;
+	padding: 0;
+	margin: 0;
+}
+
+a {
+    font-weight:bold;    
+    color: #3A5FCD;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #473C8B;
+    font-weight: normal;    
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.main article li {
+    margin-left: 24px;
+}
+
+.title {
+    margin-top: 14px;
+	font-size: 1em;
+    color: black;
+}
+
+/* ======================================
+   Timetable / Stundenplan
+   ====================================== */
+
+.timetable
+{
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	border: 2px solid #016BC2; 
+	border-right: 6px solid #016BC2; 
+	border-bottom: 8px solid #016BC2; 
+    vertical-align:top;
+	background: #6BA5E7;
+}
+.timetable th
+{
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	font-weight: normal;
+	color: white;
+	background: #016BC2; 
+	border-right: 1px solid #d0dafd;
+	border-bottom: 1px solid #d0dafd;
+    vertical-align: middle;
+	width: 200px;
+}
+
+.timetable th:first-child {
+	color: white;
+    padding: 0px;
+    padding-left: 4px;
+	padding: 4px 4px 2px 4px; 
+    vertical-align:top;
+    width:90px;
+    max-width:90px;
+}
+
+.timetable td
+{
+	margin: 0; 
+	padding: 0; 
+	border-right: 1px solid #6C8CD5;
+	border-bottom: 1px solid #CED8F6;
+	vertical-align:top;
+}
+
+.first th 
+{       
+	color: white;
+	padding: 0px 4px 2px 4px; 
+    vertical-align:top;
+   	border-style:none;
+	border-collapse: collapse;
+	text-align:left; 
+}
+
+.first  {       
+    min-width:60px;
+    max-width:60px;
+}
+
+.position
+{       
+	color: white;
+	font-size: 1.2em;
+	margin-top:-4px;
+}
+
+.event, .event1, .event2, .event3 {
+	background-color: white;
+	height: 100%;
+	padding: 0 4px;
+    margin: 0;	
+}
+
+.event2, .event3 {
+	border-right: 1px solid #6C8CD5;
+	border-bottom: 1px solid #CED8F6;
+}
+
+.event {
+	border-right: 0px solid #6C8CD5;
+	border-bottom: 1px solid #CED8F6;
+}
+
+.event1 {
+	border-right: 2px solid #6C8CD5;
+	border-bottom: 1px solid #CED8F6;
+}
+
+.blocked-cell
+{       
+	color: white;
+	background: #2C4566;
+}
+.blocked-text
+{
+	margin: 2px;
+}
+.day
+{       
+	color: white;
+	font-size: 1.2em;
+}
+
+.eventcell
+{
+	border-collapse: collapse;
+    border:0;
+    text-align:left;
+	margin:0;
+    padding:0;
+    vertical-align:top;
+	width: 100%;
+}
+
+.eventcell tr td
+{   padding: 0px;
+	border-collapse: collapse;
+    border:0;
+    vertical-align:top;
+}
+.eventcell td
+{  
+	width: 25px;
+	max-width: 125px;
+}
+
+td.lastcol {
+    min-height:100%;
+    height:100%;
+	border-right: 3px solid #016BC2; //* day separator *//
+}
+
+td.event {
+	border-collapse: collapse; 
+	border:0; 
+}	
+
+.super
+{   position:relative;
+    text-align:center;
+    vertical-align:middle;
+    top:-10px;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 0;
+    background-color:#FFFF66;
+    border:1px solid #888;
+}
+
+.lesson-class, 
+.lesson-teacher,
+.lesson-room ,
+.lesson-subject,
+.lesson-period ,
+.lesson-weeks,
+.lesson-id,
+.lesson-block,
+.lesson-time ,
+.lesson-title,
+.lesson-remark { 
+    text-align: left;
+	margin: 0 4px;
+}
+
+/* ======================================
+   List table substitutions / 
+   Vertretungsliste 
+   ====================================== */
+
+.list-table
+{
+	margin: 12px 0 12px 0;
+	padding: 0;
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	border: 2px solid #016BC2;
+}
+
+.list-table th
+{
+   
+	font-weight: normal;
+	text-align: left;
+	padding: 4px;
+	border-right: 1px solid #d0dafd;
+    color: white;
+	background: #016BC2;
+}
+
+.list-table td
+{
+	padding: 2px 4px 2px 4px;
+	color: black;
+	border-bottom: 0px solid #016BC2;
+	
+}
+
+.list-table td  a
+{
+  display:block;
+}
+
+.list-table td:hover
+{
+	color: black;
+}
+
+.list-table tr:nth-of-type(odd) {
+	background: #CAE1FF;
+}
+
+.list-table tfoot  td {
+    text-transform:uppercase;
+    color: white;
+	background: #016BC2;
+}
+
+.headercell {
+    padding:4px;
+    color:black;
+    background: #104E8B;
+}
+
+/* ==============
+    MOBILE: Main
+   ============== */
+
+
+aside {
+    color: black;
+    padding: 0 5%;
+	margin: 0:
+}
+
+.footer-container footer {
+    color: black;
+}
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
+@media only screen and (min-width: 480px) {
+
+/* ====================
+    INTERMEDIATE: Menu
+   ==================== */
+
+	.header-container,
+	.footer-container {
+		display: block;
+	}
+
+	.title {
+		font-size: 1.8em;
+	}
+
+	nav  {
+		float: right;
+		display: block;
+    }
+	
+    nav, .title, .details, .weeknav {
+        display: block;
+    }
+
+	.main {
+		padding-top: 25px;
+	}		
+	
+	.timetable
+	{
+		margin: 10px 0 10px 0;
+	}
+	
+
+}
+
+@media only screen and (min-width: 768px) {
+
+/* ====================
+    WIDE: CSS3 Effects
+   ==================== */
+
+/* ============
+    WIDE: Main
+   ============ */
+
+    aside {
+        float: right;
+        width: 28%;
+    }
+}
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    *text-indent: -9999px;
+}
+
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+/* ==========================================================================
+   Print styles
+   ========================================================================== */
+
+@media print {
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+		}
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+	
+	nav
+      {
+        content: "";
+        display: none !important;
+        visibility: hidden;
+    }
+
+    .topnav,
+    .header-container,
+    .footer-container
+      {
+        content: "";
+        display: none !important;
+        visibility: hidden;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
