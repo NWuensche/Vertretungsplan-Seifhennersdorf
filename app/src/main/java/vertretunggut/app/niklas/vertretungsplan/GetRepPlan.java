@@ -15,8 +15,6 @@ import org.jsoup.select.Elements;
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private LoadingDialog loadingDialog;
     private RepPlan parsedRepPlan;
-    private boolean Leer = false;
-    private boolean LeerInhalt = false;
     private MainActivity mainActivity;
     private int currentSite;
     private RepPlanDocumentDecorator repPlanHTML;
@@ -50,18 +48,14 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
         if (!repPlanHTML.repPlanAvailable()) {
             parsedRepPlan.add("Leer");
-            Leer = true;
-            LeerInhalt = true;
             return null;
         }
 
-        if(SearchFieldEmpty()) { // TODO schoolclass = Es wird gesucht?
-            LeerInhalt = false;
-            Elements Vertretungsplan = repPlanHTML.getRepPageTable(repPlanHTML); //TODO wirklich mit Argument oder von global nehmen?
+        if(SearchFieldEmpty()) {
+            Elements Vertretungsplan = repPlanHTML.getRepPageTable(); //TODO wirklich mit Argument oder von global nehmen?
             parseAndStoreRepPageTable(Vertretungsplan);
         }
         else {
-            LeerInhalt = true;
             Elements Vertretungsplan = repPlanHTML.select(".list-table tr");
             boolean isFirstLine = true;
             for (Element Zeile : Vertretungsplan) {
@@ -111,7 +105,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void storeWholeLine(Elements line){
-        LeerInhalt = false;
         parsedRepPlan.add(""); // To format right
         int currentRow = FIRST_SITE;
         for (Element data : line){
@@ -129,36 +122,26 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         String headerTitle = repPlanHTML.getTableTitle();
         visualRepPlan.setUpFrame(headerTitle);
 
-        if(!repPlanContainsDate() && !repPlanContainsContent()){
+        if(!repPlanHTML.repPlanAvailable()){
             String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
             new OKTextDialog(mainActivity, title).buildDialog();
 
             visualRepPlan.disableLastPressedButton();
-            Leer = false;
         }
-        else if(repPlanContainsDate() && !repPlanContainsContent()){
+        else if(nothingForSearchFound()){
             String title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
             new OKTextDialog(mainActivity, title).buildDialog();
 
             parsedRepPlan.add("Leer");
         }
-        LeerInhalt = true; // TODO Wozu? Für nächsten Thread?
 
         setUpRepPlanInFrame();
         loadingDialog.close();
     }
 
-
-    private boolean repPlanContainsDate(){
-        return !Leer;
+    public boolean nothingForSearchFound() {
+        return repPlanHTML.repPlanAvailable() && !parsedRepPlan.containsContent();
     }
-
-    private boolean repPlanContainsContent(){
-        return !LeerInhalt;
-    }
-
-
-
 
     private void setUpRepPlanInFrame(){
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());

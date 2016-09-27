@@ -37,4 +37,8 @@ public class RepPlan {
     public List<String> getPreviewList(){
         return preview;
     }
+
+    public boolean containsContent(){
+        return !preview.isEmpty();
+    }
 }
