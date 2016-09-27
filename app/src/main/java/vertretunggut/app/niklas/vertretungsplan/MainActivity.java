@@ -9,7 +9,6 @@ public class MainActivity extends AppCompatActivity {
 
     private int currentRepPlanSite;
     private String search = "";
-    private boolean buttonRechts = false;
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
     private final int FIRST_SITE = 1;
@@ -84,10 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void setSearch(String search) {
         this.search = search;
-    }
-
-    public boolean nextDayButtonLastPressed() {
-        return buttonRechts;
     }
 
     public boolean isFirstThread() {

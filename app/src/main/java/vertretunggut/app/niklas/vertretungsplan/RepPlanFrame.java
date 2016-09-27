@@ -9,26 +9,26 @@ public class RepPlanFrame {
     private MainActivity activity;
     private ActionMenuItemView prevDayButton;
     private ActionMenuItemView nextDayButton;
-    private static RepPlanFrame singleton = null;
-    private boolean nextDayButtonLastPressed;
+    private static boolean nextDayButtonLastPressed = false;
 
     public RepPlanFrame(MainActivity activity) {
         this.activity = activity;
         prevDayButton = (ActionMenuItemView) activity.findViewById(R.id.vorheriger_tag);
         nextDayButton = (ActionMenuItemView) activity.findViewById(R.id.nächster_Tag);
-        nextDayButtonLastPressed = false;
     }
 
-    public void setUpFrame(String headerTitle) {
-        ActionMenuItemView head = (ActionMenuItemView) activity.findViewById(R.id.Tag);
-        head.setTitle(headerTitle);
-
+    public void enableAllButtons() {
         nextDayButton.setEnabled(true);
         prevDayButton.setEnabled(true);
     }
 
+    public void setTitle(String headerTitle){
+        ActionMenuItemView head = (ActionMenuItemView) activity.findViewById(R.id.Tag);
+        head.setTitle(headerTitle);
+    }
+
     public void disableLastPressedButton() {
-        if (activity.nextDayButtonLastPressed()) {
+        if (nextDayButtonLastPressed()) {
             nextDayButton.setEnabled(false);
         } else {
             prevDayButton.setEnabled(false);

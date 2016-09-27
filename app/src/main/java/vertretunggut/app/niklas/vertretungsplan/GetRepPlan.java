@@ -9,8 +9,6 @@ import android.widget.GridView;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Iterator;
-
 /**
  * Created by nwuensche on 22.09.16.
  */
@@ -47,11 +45,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
         else{
             repPlanHTML = RepPlanDocumentDecorator.createDocument(currentSite);
-        }
-
-        if (!repPlanHTML.repPlanAvailable()) {
-            parsedRepPlan.add("Leer");
-            return null;
         }
 
         repPlanTable = repPlanHTML.getRepPageTable();
@@ -109,7 +102,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void storeWholeLine(Elements line) {
-        parsedRepPlan.add(""); // To format right
+        addBlankCell();
         int currentRow = FIRST_SITE;
         for (Element data : line) {
             if(currentRow > 2) {
@@ -118,40 +111,59 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             currentRow++;
         }
     }
+
+    private void addBlankCell(){
+        parsedRepPlan.add("");
+    }
     
     @Override
     protected void onPostExecute(Void result) {
-        RepPlanFrame visualRepPlan = new RepPlanFrame(mainActivity);
+        RepPlanFrame titleBar = new RepPlanFrame(mainActivity);
 
-        String headerTitle = repPlanHTML.getTableTitle();
-        visualRepPlan.setUpFrame(headerTitle);
+        String headerTitle;
+        titleBar.enableAllButtons();
 
-        if(!repPlanHTML.repPlanAvailable()) {
-            String title = "Diesen Tag gibt es (noch) keine Vertretungen.";
-            new OKTextDialog(mainActivity, title).buildDialog();
-
-            visualRepPlan.disableLastPressedButton();
+        if(nothingToShow()) {
+            headerTitle = "Leer";
+            createDialogAndMaybeDisableButton(titleBar);
         }
-        else if(nothingForSearchFound()) {
-            String title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
-            new OKTextDialog(mainActivity, title).buildDialog();
-
-            parsedRepPlan.add("Leer");
+        else {
+            headerTitle = repPlanHTML.getTableTitle();
         }
 
-        setUpRepPlanInFrame();
+        titleBar.setTitle(headerTitle);
+
+        printRepPlan();
         loadingDialog.close();
     }
 
-    public boolean nothingForSearchFound() {
+    public void createDialogAndMaybeDisableButton(RepPlanFrame titleBar){
+        String title = "";
+
+        if(!repPlanHTML.repPlanAvailable()) {
+            title = "Diesen Tag gibt es (noch) keine Vertretungen.";
+            titleBar.disableLastPressedButton();
+        }
+        else if(searchFoundNothing()) {
+            title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
+        }
+
+        new OKTextDialog(mainActivity, title).buildDialog();
+    }
+
+    public boolean searchFoundNothing() {
         return repPlanHTML.repPlanAvailable() && !parsedRepPlan.containsContent();
     }
 
-    private void setUpRepPlanInFrame() {
+    public boolean nothingToShow(){
+        return !repPlanHTML.repPlanAvailable() || searchFoundNothing();
+    }
+
+    private void printRepPlan() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
-        GridView listview = (GridView) mainActivity.findViewById(R.id.gridview_liste);
-        listview.setAdapter(adapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        GridView listOfReps = (GridView) mainActivity.findViewById(R.id.list_of_reps);
+        listOfReps.setAdapter(adapter);
+        listOfReps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String title = parsedRepPlan.getFullTextAt(position);

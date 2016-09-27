@@ -16,7 +16,7 @@
         android:textStyle="bold"
         android:numColumns="10"
         android:horizontalSpacing="5dp"
-        android:id="@+id/gridview_liste"
+        android:id="@+id/list_of_reps"
         />
 
 </FrameLayout>
