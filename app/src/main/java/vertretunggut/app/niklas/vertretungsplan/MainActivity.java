@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
-            case R.id.Suchen:
+            case R.id.Search:
                 new SearchDialog(this).buildDialog();
                 break;
-            case R.id.Uber:
+            case R.id.About:
                 new AboutDialog(this).buildDialog();
                 break;
         }
