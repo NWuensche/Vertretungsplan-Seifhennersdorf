@@ -19,22 +19,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        int firstRepPlanSite = FIRST_SITE;
 
-        currentRepPlanSite = firstRepPlanSite;
+        currentRepPlanSite = FIRST_SITE;
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
 
+        handleNetworkAndStartGetter();
+        headOfRepPlan = new RepPlanFrame(this);
+    }
+
+    public void handleNetworkAndStartGetter(){
         if(NoNetworkDialog.isNetworkAvailable(this)) {
             repPlanGetter.execute();
         }
         else{
             new NoNetworkDialog(this).buildDialog();
         }
-
-
-
-        headOfRepPlan = new RepPlanFrame(this);
-
     }
 
     public void increaseCurrentRepPlanSite(){
@@ -72,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
     public void restartRepPlanGetter() {
         repPlanGetter.cancel(true);
