@@ -1,6 +1,7 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -53,7 +54,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             parseAndStoreRepPageTable(repPlanTable);
         }
         else {
-            startSearch(repPlanTable);
+            startSearch(repPlanTable, mainActivity.getSearch());
         }
         return null;
     }
@@ -62,7 +63,23 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return mainActivity.getSearch().equals("");
     }
 
-    public void parseAndStoreRepPageTable(Elements table) {
+
+
+    public void searchFor(String search){
+        Elements repPlanTable = repPlanHTML.getRepPageTable();
+
+        parsedRepPlan.clear();
+        if(search == null || search.equals("")) {// TODO wie wird es gemacht?
+            parseAndStoreRepPageTable(repPlanTable);
+        }
+        else{
+            startSearch(repPlanTable, search);
+        }
+        printRepPlan();
+
+    }
+
+    private void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
             Elements allDataInCurrentLine = RepPlanDocumentDecorator.extract(currentLine);
             parseAndStoreDataInLine(allDataInCurrentLine);
@@ -80,7 +97,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void startSearch(Elements repPlanTable) {
+    private void startSearch(Elements repPlanTable, String search) {
         boolean isFirstLine = true;
         for (Element Zeile : repPlanTable) {
             Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
@@ -89,20 +106,20 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
                 continue;
             }
             for (Element data : EinzelnZeile) {
-                if(dataContainsSearch(data.text())){
+                if(dataContainsSearch(data.text(), search)){
                     storeWholeLine(EinzelnZeile);
+                    break;
                 }
             }
         }
     }
 
-    private boolean dataContainsSearch(String data) {
+    private boolean dataContainsSearch(String data, String search) {
         data = data.toLowerCase();
-        return data.contains(mainActivity.getSearch().toLowerCase());
+        return data.contains(search.toLowerCase());
     }
 
     private void storeWholeLine(Elements line) {
-        addBlankCell();
         int currentRow = FIRST_SITE;
         for (Element data : line) {
             if(currentRow > 2) {
@@ -112,16 +129,19 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void addBlankCell(){
-        parsedRepPlan.add("");
-    }
-    
     @Override
     protected void onPostExecute(Void result) {
+        updateTitleBarTitle();
+
+        printRepPlan();
+        loadingDialog.close();
+    }
+
+    public void updateTitleBarTitle(){
         RepPlanFrame titleBar = new RepPlanFrame(mainActivity);
 
         String headerTitle;
-        titleBar.enableAllButtons();
+        titleBar.enableMoveButtons();
 
         if(nothingToShow()) {
             headerTitle = "Kein Inhalt";
@@ -132,9 +152,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         }
 
         titleBar.setTitle(headerTitle);
-
-        printRepPlan();
-        loadingDialog.close();
     }
 
     public void createDialogAndMaybeDisableButton(RepPlanFrame titleBar){
@@ -170,6 +187,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
                 new TextToast(mainActivity, title).buildDialog();
             }
         });
+    }
+
+    public RepPlan getRepPlan(){
+        return parsedRepPlan;
     }
 
 }

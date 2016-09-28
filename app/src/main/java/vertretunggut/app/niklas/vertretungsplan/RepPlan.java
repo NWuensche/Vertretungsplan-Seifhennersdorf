@@ -42,4 +42,9 @@ public class RepPlan {
     public boolean containsContent() {
         return !preview.isEmpty();
     }
+
+    public void clear() {
+        preview.clear();
+        fullText.clear();
+    }
 }

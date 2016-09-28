@@ -1,18 +1,23 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private int currentRepPlanSite;
     private String search = "";
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
     private final int FIRST_SITE = 1;
-    private RepPlanFrame headOfRepPlan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
 
         handleNetworkAndStartGetter();
-        headOfRepPlan = new RepPlanFrame(this);
     }
 
     // TODO kein Handling, wenn Internet nach erster Seite ausfällt und ich weiter drücke
@@ -48,16 +52,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onQueryTextSubmit(String query) {
+        // User pressed the search button
+        return false;
+    }
 
+    @Override
+    public boolean onQueryTextChange(String search) {
+        // User changed the text
+        this.search = search.replaceAll("\\s+","");
+        repPlanGetter.searchFor(this.search);
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //TODO better?
         switch(item.getItemId()){
-            case R.id.Search:
-                new SearchDialog(this).buildDialog();
-                break;
             case R.id.About:
                 new AboutDialog(this).buildDialog();
                 break;
@@ -74,10 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
     public String getSearch() {
         return search;
-    }
-
-    public void setSearch(String search) {
-        this.search = search;
     }
 
     public boolean isFirstThread() {

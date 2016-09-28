@@ -32,7 +32,7 @@ public class RepPlanFrame {
         });
     }
 
-    public void enableAllButtons() {
+    public void enableMoveButtons() {
         nextDay.show();
         prevDay.show();
     }
@@ -54,14 +54,24 @@ public class RepPlanFrame {
     }
 
     public void previousDayButtonPressed() {
+        handleNetworkRight();
+
         activity.decreaseCurrentRepPlanSite();
         nextDayButtonLastPressed = false;
         activity.restartRepPlanGetter();
     }
 
     public void nextDayButtonPressed() {
+        handleNetworkRight();
+
         activity.increaseCurrentRepPlanSite();
         nextDayButtonLastPressed = true;
         activity.restartRepPlanGetter();
+    }
+
+    public void handleNetworkRight(){
+        if(!NoNetworkDialog.isNetworkAvailable(activity)) {
+            new NoNetworkDialog(activity).buildDialog();
+        }
     }
 }
