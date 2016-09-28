@@ -141,14 +141,14 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         String title = "";
 
         if(!repPlanHTML.repPlanAvailable()) {
-            title = "Diesen Tag gibt es (noch) keine Vertretungen.";
+            title = "Keine Vertretungen für diesen Tag";
             titleBar.disableLastPressedButton();
         }
         else if(searchFoundNothing()) {
-            title = "Es gibt keine Stunde für " + mainActivity.getSearch() +" an diesem Tag.";
+            title = "Keine Vertretungen für " + mainActivity.getSearch() +" an diesem Tag.";
         }
 
-        new OKTextDialog(mainActivity, title).buildDialog();
+        new NothingThereToast(mainActivity, title).buildDialog();
     }
 
     public boolean searchFoundNothing() {
@@ -167,7 +167,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String title = parsedRepPlan.getFullTextAt(position);
-                new OKTextDialog(mainActivity, title).buildDialog();
+                new NothingThereToast(mainActivity, title).buildDialog();
             }
         });
     }
