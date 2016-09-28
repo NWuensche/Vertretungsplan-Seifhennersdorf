@@ -70,10 +70,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void parseAndStoreDataInLine(Elements allDataInCurrentLine) {
-        boolean inFirstRow = true;
+        int currColumn = 1;
         for (Element currentData : allDataInCurrentLine) {
-            if(inFirstRow) {
-                inFirstRow = false;
+            if(currColumn <= 2) {
+                currColumn++ ;
                 continue;
             }
             parsedRepPlan.add(currentData.text());

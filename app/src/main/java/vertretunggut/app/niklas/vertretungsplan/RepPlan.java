@@ -9,6 +9,7 @@ import java.util.List;
 public class RepPlan {
     List<String> preview;
     List<String> fullText;
+    final int MAX_LENGTH = 6;
 
     public RepPlan() {
         preview = new ArrayList<>();
@@ -17,7 +18,7 @@ public class RepPlan {
 
     public void add(String input) {
         if(toLongForScreen(input)) {
-            preview.add(input.substring(0, 3) + "..");
+            preview.add(input.substring(0, MAX_LENGTH - 2) + "..");
             fullText.add(input);
         }
         else {
@@ -27,7 +28,7 @@ public class RepPlan {
     }
 
     private boolean toLongForScreen(String input) {
-        return input.length() > 5;
+        return input.length() > MAX_LENGTH;
     }
 
     public String getFullTextAt(int position) {
