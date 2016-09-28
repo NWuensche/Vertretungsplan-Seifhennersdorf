@@ -8,8 +8,8 @@ android {
         applicationId "niklas.app.vertretunggut"
         minSdkVersion 10
         targetSdkVersion 24
-        versionCode 5
-        versionName "2.1.0"
+        versionCode 6
+        versionName "2.2.0"
     }
     buildTypes {
         release {
