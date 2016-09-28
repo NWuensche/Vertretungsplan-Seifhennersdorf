@@ -1,27 +1,33 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
-import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.view.View;
+import android.widget.ProgressBar;
 
 /**
  * Created by nwuensche on 26.09.16.
  */
 public class LoadingDialog implements DialogBuilder{
     MainActivity activity;
-    ProgressDialog loadingDialog;
 
     public LoadingDialog(MainActivity activity) {
         this.activity = activity;
     }
 
     public void buildDialog() {
-        loadingDialog = new ProgressDialog(activity);
-        loadingDialog.setTitle("Vertretungsplan");
-        loadingDialog.setMessage("Laden...");
-        loadingDialog.setIndeterminate(false);
-        loadingDialog.show();
+        ProgressBar loadingCircle = (ProgressBar) activity.findViewById(R.id.progress_bar);
+        int color = Color.parseColor("#ADD8E6");
+
+        loadingCircle.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+        activity.findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.list_of_reps).setVisibility(View.GONE);
     }
 
     public void close() {
-        loadingDialog.dismiss();
+        activity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        activity.findViewById(R.id.list_of_reps).setVisibility(View.VISIBLE);
+
     }
 }

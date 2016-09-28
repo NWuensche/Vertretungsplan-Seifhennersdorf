@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,14 +11,27 @@
     tools:context="vertretunggut.app.niklas.vertretungsplan.MainActivity"
     android:background="@drawable/school">
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+            <ProgressBar
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:indeterminate="true"
+                android:id ="@+id/progress_bar"
+                android:maxHeight="100dp"
+                android:maxWidth="100dp" />
+    </RelativeLayout>
+
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:numColumns="10"
         android:horizontalSpacing="5dp"
-        android:id="@+id/list_of_reps"
-        />
+        android:id="@+id/list_of_reps" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/next_day_button"
@@ -35,6 +49,4 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/left_arrow" />
 
-
-
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

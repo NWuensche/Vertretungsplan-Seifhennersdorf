@@ -148,7 +148,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             title = "Keine Vertretungen für " + mainActivity.getSearch() +" an diesem Tag.";
         }
 
-        new NothingThereToast(mainActivity, title).buildDialog();
+        new TextToast(mainActivity, title).buildDialog();
     }
 
     public boolean searchFoundNothing() {
@@ -167,7 +167,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String title = parsedRepPlan.getFullTextAt(position);
-                new NothingThereToast(mainActivity, title).buildDialog();
+                new TextToast(mainActivity, title).buildDialog();
             }
         });
     }

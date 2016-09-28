@@ -5,11 +5,11 @@ import android.widget.Toast;
 /**
  * Created by nwuensche on 26.09.16.
  */
-public class NothingThereToast implements DialogBuilder {
+public class TextToast implements DialogBuilder {
     private MainActivity activity;
     private String text;
 
-    public NothingThereToast(MainActivity activity, String text) {
+    public TextToast(MainActivity activity, String text) {
         this.activity = activity;
         this.text = text;
     }
