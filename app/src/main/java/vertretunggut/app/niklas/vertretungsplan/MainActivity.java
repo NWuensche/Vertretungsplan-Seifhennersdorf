@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         headOfRepPlan = new RepPlanFrame(this);
     }
 
+    // TODO kein Handling, wenn Internet nach erster Seite ausfällt und ich weiter drücke
     public void handleNetworkAndStartGetter(){
         if(NoNetworkDialog.isNetworkAvailable(this)) {
             repPlanGetter.execute();

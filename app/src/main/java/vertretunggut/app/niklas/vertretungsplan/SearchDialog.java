@@ -36,7 +36,7 @@ public class SearchDialog implements DialogBuilder {
                         String search = EKlasse.getText().toString();
                         search.replaceAll("\\s+","");
                         activity.setSearch(search);
-                        activity.restartRepPlanGetter();
+                        activity.restartRepPlanGetter(); // TODO optimize, ich brauche keinen neuen Plan fürs suchen
                     }
                 })
 
