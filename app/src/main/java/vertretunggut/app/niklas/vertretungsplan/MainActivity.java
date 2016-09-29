@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         handleNetworkAndStartGetter();
     }
 
-    // TODO kein Handling, wenn Internet nach erster Seite ausfällt und ich weiter drücke
     public void handleNetworkAndStartGetter(){
         if(NoNetworkHandler.isNetworkAvailable(this)) { // TODO besser
             noNetwork.disableNoNetworkView();
