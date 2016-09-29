@@ -22,9 +22,15 @@ public class NoNetworkDialog implements DialogBuilder{
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final View rootView = activity.getLayoutInflater().inflate(R.layout.internetfehler, null);
         builder.setView(rootView)
-                .setPositiveButton("Bestätigen", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Erneut versuchen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        activity.handleNetworkAndStartGetter();
+                    }
+                })
+                .setNegativeButton("Beenden", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         System.exit(0);
                     }
                 })

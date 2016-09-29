@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
     private final int FIRST_SITE = 1;
+    private NoNetworkDialog noNetwork;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             repPlanGetter.execute();
         }
         else{
-            new NoNetworkDialog(this).buildDialog();
+            noNetwork = new NoNetworkDialog(this);
+            noNetwork.buildDialog();
         }
     }
 
