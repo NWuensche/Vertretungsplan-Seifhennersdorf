@@ -75,10 +75,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO better?
+
         switch(item.getItemId()){
             case R.id.About:
                 new AboutDialog(this).buildDialog();
+                break;
+            case R.id.Exit:
+                System.exit(0);
                 break;
         }
 
