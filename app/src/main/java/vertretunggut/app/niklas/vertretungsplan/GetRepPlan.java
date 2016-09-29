@@ -189,8 +189,4 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         });
     }
 
-    public RepPlan getRepPlan(){
-        return parsedRepPlan;
-    }
-
 }

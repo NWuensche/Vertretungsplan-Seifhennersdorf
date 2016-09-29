@@ -1,12 +1,9 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +15,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private GetRepPlan repPlanGetter;
     private boolean firstTimeStarted = true;
     private final int FIRST_SITE = 1;
-    private NoNetworkDialog noNetwork;
+    private NoNetworkHandler noNetwork;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,34 +24,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         currentRepPlanSite = FIRST_SITE;
         repPlanGetter = new GetRepPlan(this, currentRepPlanSite);
+        noNetwork = new NoNetworkHandler(this);
 
         handleNetworkAndStartGetter();
     }
 
     // TODO kein Handling, wenn Internet nach erster Seite ausfällt und ich weiter drücke
     public void handleNetworkAndStartGetter(){
-        if(NoNetworkDialog.isNetworkAvailable(this)) {
-            findViewById(R.id.noNetworkLayout).setVisibility(View.GONE);
-            findViewById(R.id.next_day_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.prev_day_button).setVisibility(View.VISIBLE); // TODO was wenn kein tag aber internet weg, und knopf nicht da sein sollte
-
-            findViewById(R.id.list_of_reps).setVisibility(View.VISIBLE);
-            findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-            repPlanGetter.execute();
+        if(NoNetworkHandler.isNetworkAvailable(this)) { // TODO besser
+            noNetwork.disableNoNetworkView();
         }
         else{
-
-            findViewById(R.id.noNetworkLayout).setVisibility(View.VISIBLE);
-            findViewById(R.id.next_day_button).setVisibility(View.GONE);
-            findViewById(R.id.prev_day_button).setVisibility(View.GONE);
-            findViewById(R.id.list_of_reps).setVisibility(View.GONE);
-            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-            findViewById(R.id.noNetworkRetry).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handleNetworkAndStartGetter();
-                }
-            });
+            noNetwork.showNoNetworkView();
         }
 
     }

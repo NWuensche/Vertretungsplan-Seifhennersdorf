@@ -54,24 +54,35 @@ public class RepPlanFrame {
     }
 
     public void previousDayButtonPressed() {
-        handleNetworkRight();
-
         activity.decreaseCurrentRepPlanSite();
         nextDayButtonLastPressed = false;
-        activity.restartRepPlanGetter();
+
+        boolean connected = handleNetworkRight();
+
+        if(connected) {
+
+            activity.restartRepPlanGetter();
+        }
     }
 
     public void nextDayButtonPressed() {
-        handleNetworkRight();
 
         activity.increaseCurrentRepPlanSite();
         nextDayButtonLastPressed = true;
-        activity.restartRepPlanGetter();
+
+        boolean connected = handleNetworkRight();
+
+        if(connected){
+            activity.restartRepPlanGetter();
+        }
+
     }
 
-    public void handleNetworkRight(){
-        if(!NoNetworkDialog.isNetworkAvailable(activity)) {
-            new NoNetworkDialog(activity).buildDialog();
+    public boolean handleNetworkRight(){
+        if(!NoNetworkHandler.isNetworkAvailable(activity)) {
+            new NoNetworkHandler(activity).showNoNetworkView();
+            return false;
         }
+        return true;
     }
 }
