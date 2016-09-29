@@ -34,12 +34,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     // TODO kein Handling, wenn Internet nach erster Seite ausfällt und ich weiter drücke
     public void handleNetworkAndStartGetter(){
         if(NoNetworkDialog.isNetworkAvailable(this)) {
+            findViewById(R.id.noNetworkLayout).setVisibility(View.GONE);
+            findViewById(R.id.next_day_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.prev_day_button).setVisibility(View.VISIBLE); // TODO was wenn kein tag aber internet weg, und knopf nicht da sein sollte
+
+            findViewById(R.id.list_of_reps).setVisibility(View.VISIBLE);
+            findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
             repPlanGetter.execute();
         }
         else{
-            noNetwork = new NoNetworkDialog(this);
-            noNetwork.buildDialog();
+
+            findViewById(R.id.noNetworkLayout).setVisibility(View.VISIBLE);
+            findViewById(R.id.next_day_button).setVisibility(View.GONE);
+            findViewById(R.id.prev_day_button).setVisibility(View.GONE);
+            findViewById(R.id.list_of_reps).setVisibility(View.GONE);
+            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+            findViewById(R.id.noNetworkRetry).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handleNetworkAndStartGetter();
+                }
+            });
         }
+
     }
 
     public void increaseCurrentRepPlanSite(){
