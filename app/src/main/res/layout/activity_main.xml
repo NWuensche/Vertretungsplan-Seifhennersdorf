@@ -11,6 +11,14 @@
     tools:context="vertretunggut.app.niklas.vertretungsplan.MainActivity"
     android:background="@drawable/school">
 
+    <RelativeLayout
+        android:id="@+id/aboutLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/noNetworkLayout"
         android:layout_width="match_parent"
