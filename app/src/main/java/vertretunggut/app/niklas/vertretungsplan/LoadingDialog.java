@@ -22,12 +22,12 @@ public class LoadingDialog implements DialogBuilder{
         loadingCircle.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
 
         activity.findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.list_of_reps).setVisibility(View.GONE);
+        activity.findViewById(R.id.layout_of_reps).setVisibility(View.GONE);
     }
 
     public void close() {
         activity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-        activity.findViewById(R.id.list_of_reps).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.layout_of_reps).setVisibility(View.VISIBLE);
 
     }
 }

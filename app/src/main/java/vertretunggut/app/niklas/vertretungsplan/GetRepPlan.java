@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -177,8 +178,8 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void printRepPlan() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.itemliste, R.id.item_liste, parsedRepPlan.getPreviewList());
-        GridView listOfReps = (GridView) mainActivity.findViewById(R.id.list_of_reps);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.list_row, parsedRepPlan.getPreviewList());
+        ListView listOfReps = (ListView) mainActivity.findViewById(R.id.list);
         listOfReps.setAdapter(adapter);
         listOfReps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -10,7 +10,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.RelativeLayout;
 
 import mehdi.sakout.aboutpage.AboutPage;
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         FloatingActionButton nextDay = (FloatingActionButton) findViewById(R.id.next_day_button);
         prevDay.hide();
         nextDay.hide();
-        findViewById(R.id.list_of_reps).setVisibility(View.GONE);
+        findViewById(R.id.layout_of_reps).setVisibility(View.GONE);
         findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         findViewById(R.id.noNetworkLayout).setVisibility(View.GONE);
 

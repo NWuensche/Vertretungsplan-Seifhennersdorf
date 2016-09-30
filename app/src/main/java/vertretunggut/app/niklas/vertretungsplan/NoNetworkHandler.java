@@ -1,15 +1,10 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.RelativeLayout;
 
 /**
  * Created by nwuensche on 26.09.16.
@@ -31,7 +26,7 @@ public class NoNetworkHandler {
 
         prevDay.hide();
         nextDay.hide();
-        activity.findViewById(R.id.list_of_reps).setVisibility(View.GONE);
+        activity.findViewById(R.id.layout_of_reps).setVisibility(View.GONE);
         activity.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         activity.findViewById(R.id.noNetworkRetry).setOnClickListener(new View.OnClickListener() {
@@ -47,7 +42,7 @@ public class NoNetworkHandler {
 
         prevDay.show();
         nextDay.show();
-        activity.findViewById(R.id.list_of_reps).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.layout_of_reps).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
 
         activity.restartRepPlanGetter();
