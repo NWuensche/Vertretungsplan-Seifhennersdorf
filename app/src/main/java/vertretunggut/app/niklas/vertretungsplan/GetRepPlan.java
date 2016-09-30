@@ -11,12 +11,14 @@ import android.widget.ListView;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+
 /**
  * Created by nwuensche on 22.09.16.
  */
 public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private LoadingDialog loadingDialog;
-    private RepPlan parsedRepPlan;
+    private ArrayList<RepPlanLine> parsedRepPlanLines;
     private MainActivity mainActivity;
     private int currentSite;
     private RepPlanDocumentDecorator repPlanHTML;
@@ -26,7 +28,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
         repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
-        parsedRepPlan = new RepPlan();
+        parsedRepPlanLines = new ArrayList<>();
     }
 
 
@@ -43,7 +45,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         Elements repPlanTable;
 
         if(mainActivity.isFirstThread()) {
-            repPlanHTML = RepPlanDocumentDecorator.createTodaysDocument();
+            repPlanHTML = RepPlanDocumentDecorator.createTodaysDocument(mainActivity);
         }
         else{
             repPlanHTML = RepPlanDocumentDecorator.createDocument(currentSite);
@@ -69,7 +71,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     public void searchFor(String search){
         Elements repPlanTable = repPlanHTML.getRepPageTable();
 
-        parsedRepPlan.clear();
+        parsedRepPlanLines.clear();
         if(search == null || search.equals("")) {// TODO wie wird es gemacht?
             parseAndStoreRepPageTable(repPlanTable);
         }
@@ -88,14 +90,49 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void parseAndStoreDataInLine(Elements allDataInCurrentLine) {
+        RepPlanLine line;
+        String hour = "";
+        String teacher = "";
+        String subject = "";
+        String room = "";
+        String schoolClass = "";
+        String type = "";
+        String message = "";
         int currColumn = 1;
         for (Element currentData : allDataInCurrentLine) {
             if(currColumn <= 2) {
                 currColumn++ ;
                 continue;
             }
-            parsedRepPlan.add(currentData.text());
+            switch(currColumn){
+                case 3:
+                    hour = currentData.text();
+                    break;
+                case 4:
+                    teacher = currentData.text();
+                    break;
+                case 5:
+                    subject = currentData.text();
+                    break;
+                case 6:
+                    room = currentData.text();
+                    break;
+                case 7:
+                    schoolClass = currentData.text();
+                    break;
+                case 9:
+                    type = currentData.text();
+                    break;
+                case 11:
+                    message = currentData.text();
+                    break;
+                default:
+                    break;
+            }
+            currColumn++;
         }
+        line = new RepPlanLine(hour, teacher, subject, room, schoolClass, type, message);
+        parsedRepPlanLines.add(line);
     }
 
     private void startSearch(Elements repPlanTable, String search) {
@@ -108,7 +145,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             }
             for (Element data : EinzelnZeile) {
                 if(dataContainsSearch(data.text(), search)){
-                    storeWholeLine(EinzelnZeile);
+                    parseAndStoreDataInLine(EinzelnZeile);
                     break;
                 }
             }
@@ -118,16 +155,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private boolean dataContainsSearch(String data, String search) {
         data = data.toLowerCase();
         return data.contains(search.toLowerCase());
-    }
-
-    private void storeWholeLine(Elements line) {
-        int currentRow = FIRST_SITE;
-        for (Element data : line) {
-            if(currentRow > 2) {
-                parsedRepPlan.add(data.text());
-            }
-            currentRow++;
-        }
     }
 
     @Override
@@ -170,7 +197,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     public boolean searchFoundNothing() {
-        return repPlanHTML.repPlanAvailable() && !parsedRepPlan.containsContent();
+        return repPlanHTML.repPlanAvailable() && parsedRepPlanLines.isEmpty();
     }
 
     public boolean nothingToShow(){
@@ -178,16 +205,9 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     }
 
     private void printRepPlan() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mainActivity, R.layout.list_row, parsedRepPlan.getPreviewList());
-        ListView listOfReps = (ListView) mainActivity.findViewById(R.id.list);
+        RepPlanAdapter adapter = new RepPlanAdapter(mainActivity, parsedRepPlanLines);
+        ListView listOfReps = (ListView) mainActivity.findViewById(R.id.list_view);
         listOfReps.setAdapter(adapter);
-        listOfReps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String title = parsedRepPlan.getFullTextAt(position);
-                new TextToast(mainActivity, title).buildDialog();
-            }
-        });
     }
 
 }

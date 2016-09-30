@@ -39,7 +39,7 @@ public class RepPlanDocumentDecorator {
         return line.select("td");
     }
 
-    public static RepPlanDocumentDecorator createTodaysDocument() {
+    public static RepPlanDocumentDecorator createTodaysDocument(MainActivity activity) {
         int currentSite = FIRST_SITE;
         RepPlanDocumentDecorator maybeRepPlanHTML = createDocument(currentSite);
         DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
@@ -54,6 +54,9 @@ public class RepPlanDocumentDecorator {
                 maybeRepPlanHTML = createDocument(currentSite);
             }
         }
+
+        activity.setCurrentRepPlanSite(currentSite);
+
         return maybeRepPlanHTML;
     }
 

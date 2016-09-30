@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import mehdi.sakout.aboutpage.AboutPage;
@@ -156,5 +157,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         boolean firstTimeStartedTmp = firstTimeStarted;
         firstTimeStarted = false;
         return firstTimeStartedTmp;
+    }
+
+    public void setCurrentRepPlanSite(int site){
+        this.currentRepPlanSite = site;
     }
 }
