@@ -51,4 +51,8 @@ public class RepPlanLine {
     public String getSubject() {
         return subject;
     }
+
+    public boolean isEmpty() {
+        return hour.equals("") && teacher.equals("") && subject.equals("") && room.equals("") && schoolClass.equals("") && type.equals("") && message.equals("");
+    }
 }

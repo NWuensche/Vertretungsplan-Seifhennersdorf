@@ -100,10 +100,6 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         String message = "";
         int currColumn = 1;
         for (Element currentData : allDataInCurrentLine) {
-            if(currColumn <= 2) {
-                currColumn++ ;
-                continue;
-            }
             switch(currColumn){
                 case 3:
                     hour = currentData.text();
@@ -132,7 +128,9 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             currColumn++;
         }
         line = new RepPlanLine(hour, teacher, subject, room, schoolClass, type, message);
-        parsedRepPlanLines.add(line);
+        if(!line.isEmpty()){
+            parsedRepPlanLines.add(line);
+        }
     }
 
     private void startSearch(Elements repPlanTable, String search) {
