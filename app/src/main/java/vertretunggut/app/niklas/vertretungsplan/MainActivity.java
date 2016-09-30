@@ -1,6 +1,7 @@
 package vertretunggut.app.niklas.vertretungsplan;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -71,6 +72,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextSubmit(String query) {
         // User pressed the search button
         return false;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            FrameLayout main = (FrameLayout) findViewById(R.id.main_layout);
+            main.setBackgroundDrawable(getResources().getDrawable(R.drawable.school_horizontal));
+        }
+        else {
+            FrameLayout main = (FrameLayout) findViewById(R.id.main_layout);
+            main.setBackgroundDrawable(getResources().getDrawable(R.drawable.school_vertical));
+        }
     }
 
     @Override
