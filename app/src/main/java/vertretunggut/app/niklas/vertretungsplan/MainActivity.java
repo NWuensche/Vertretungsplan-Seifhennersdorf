@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void handleNetworkAndStartGetter(){
-        if(NoNetworkHandler.isNetworkAvailable(this)) { // TODO besser
+        if(NoNetworkHandler.isNetworkAvailable(this)) {
             noNetwork.disableNoNetworkView();
         }
         else{
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
         View aboutPage = new AboutPage(this)
-                .isRTL(false) // TODO ?
+                .isRTL(false)
                 .setDescription("Dies ist die offizielle Vertretungsplan-App vom Oberland-Gymnasium Seifhennersdorf")
                 .setImage(R.drawable.buch)
                 .addGroup("Kontakt")

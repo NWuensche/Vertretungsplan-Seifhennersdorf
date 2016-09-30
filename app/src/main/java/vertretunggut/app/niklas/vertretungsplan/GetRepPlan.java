@@ -22,12 +22,11 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private MainActivity mainActivity;
     private int currentSite;
     private RepPlanDocumentDecorator repPlanHTML;
-    private final int FIRST_SITE = 1;
 
     public GetRepPlan(MainActivity mainActivity, int currentSite) {
         this.mainActivity = mainActivity;
         this.currentSite = currentSite;
-        repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO nice
+        repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO make that better, I don't need this.
         parsedRepPlanLines = new ArrayList<>();
     }
 
@@ -72,7 +71,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         Elements repPlanTable = repPlanHTML.getRepPageTable();
 
         parsedRepPlanLines.clear();
-        if(search == null || search.equals("")) {// TODO wie wird es gemacht?
+        if(search.equals("")) {
             parseAndStoreRepPageTable(repPlanTable);
         }
         else{

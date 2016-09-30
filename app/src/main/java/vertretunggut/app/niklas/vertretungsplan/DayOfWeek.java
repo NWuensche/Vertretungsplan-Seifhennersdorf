@@ -59,7 +59,7 @@ public enum DayOfWeek {
             dateParser = new SimpleDateFormat("dd.MM.yyyy").parse(date);
         }
         catch(ParseException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         return dateParser;
@@ -82,11 +82,8 @@ public enum DayOfWeek {
                 return DayOfWeek.WEEKEND;
             case 1:
                 return DayOfWeek.WEEKEND;
-            default:
-                Log.e("Error at getDayOfWeek","d");
-                return DayOfWeek.ERROR;
-                // TODO Exception
         }
+        return null; // TODO besser
     }
 
     public static DayOfWeek getTodaysDayOfWeek() {

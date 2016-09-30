@@ -41,23 +41,25 @@ public class RepPlanDocumentDecorator {
 
     public static RepPlanDocumentDecorator createTodaysDocument(MainActivity activity) {
         int currentSite = FIRST_SITE;
-        RepPlanDocumentDecorator maybeRepPlanHTML = createDocument(currentSite);
-        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(maybeRepPlanHTML);
+        RepPlanDocumentDecorator firstRepPlanHTML = createDocument(currentSite);
+        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(firstRepPlanHTML);
         DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
 
         int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
         if (Difference > 0) {
             currentSite = (Difference % 5) + 1;
-            maybeRepPlanHTML = createDocument(currentSite); // TODO Optimieren
-            if (!maybeRepPlanHTML.repPlanAvailable()) {
+            RepPlanDocumentDecorator nextRepPlanHTML = createDocument(currentSite);
+            if (nextRepPlanHTML.repPlanAvailable()) {
+                firstRepPlanHTML = nextRepPlanHTML;
+            }
+            else{
                 currentSite = FIRST_SITE;
-                maybeRepPlanHTML = createDocument(currentSite);
             }
         }
 
         activity.setCurrentRepPlanSite(currentSite);
 
-        return maybeRepPlanHTML;
+        return firstRepPlanHTML;
     }
 
     public static RepPlanDocumentDecorator createDocument(int SiteNumber) {

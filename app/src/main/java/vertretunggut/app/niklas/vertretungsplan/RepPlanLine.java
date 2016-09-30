@@ -14,7 +14,7 @@ public class RepPlanLine {
     private String type;
     private String message;
 
-    public RepPlanLine(String hour, String teacher, String subject, String room, String schoolClass, String type, String message) { // TODO Nur line übergeben
+    public RepPlanLine(String hour, String teacher, String subject, String room, String schoolClass, String type, String message) {
         this.hour = hour;
         this.teacher = teacher;
         this.subject = subject;
@@ -22,7 +22,7 @@ public class RepPlanLine {
         this.schoolClass = schoolClass;
         this.type = type;
         this.message = message;
-    } // TODO Fange auch keine Stunde ab
+    }
 
     public String getHour() {
         return hour;
