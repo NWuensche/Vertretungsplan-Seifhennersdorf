@@ -112,9 +112,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void createAboutPage(){
+        Element school = getLicenseElement("der Schule", "https://www.gymnasium-seifhennersdorf.de/");
         Element logo = getLicenseElement("dem Logo", "http://game-icons.net/");
         Element jSoup = getLicenseElement("jsoup", "http://jsoup.org/");
         Element aboutPageBuilder = getLicenseElement("android-about-page", "https://github.com/medyo/android-about-page");
+
 
         View aboutPage = new AboutPage(this)
                 .isRTL(false) // TODO ?
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 .addPlayStore("niklas.app.vertretunggut")
                 .addGitHub("nwuensche")
                 .addGroup("Lizenzen")
+                .addItem(school)
                 .addItem(logo)
                 .addItem(jSoup)
                 .addItem(aboutPageBuilder)
