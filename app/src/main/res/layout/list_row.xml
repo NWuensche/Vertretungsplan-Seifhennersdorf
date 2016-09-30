@@ -6,10 +6,35 @@
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name" />
+        android:text="Hout" />
     <TextView
-        android:id="@+id/tvHome"
+        android:id="@+id/teacher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HomeTown" />
+        android:text="Teacher" />
+    <TextView
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subject" />
+    <TextView
+        android:id="@+id/room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Room" />
+    <TextView
+        android:id="@+id/schoolClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="School class" />
+    <TextView
+        android:id="@+id/type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type" />
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message" />
 </LinearLayout>

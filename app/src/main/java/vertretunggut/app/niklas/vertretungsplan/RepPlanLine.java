@@ -6,13 +6,13 @@ import android.widget.RelativeLayout;
  * Created by nwuensche on 30.09.16.
  */
 public class RepPlanLine {
-    String hour;
-    String schoolClass;
-    String teacher;
-    String room;
-    String type;
-    String message;
-    String subject;
+    private String hour;
+    private String teacher;
+    private String subject;
+    private String room;
+    private String schoolClass;
+    private String type;
+    private String message;
 
     public RepPlanLine(String hour, String teacher, String subject, String room, String schoolClass, String type, String message) { // TODO Nur line übergeben
         this.hour = hour;
@@ -24,5 +24,31 @@ public class RepPlanLine {
         this.message = message;
     } // TODO Fange auch keine Stunde ab
 
+    public String getHour() {
+        return hour;
+    }
 
+    public String getSchoolClass() {
+        return schoolClass;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
 }
