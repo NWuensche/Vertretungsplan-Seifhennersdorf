@@ -4,6 +4,4 @@
     android:id="@+id/item_liste"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical">
-    <!--android:minWidth="100px"-->
-
 </TextView>
