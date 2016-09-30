@@ -50,6 +50,8 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
             repPlanHTML = RepPlanDocumentDecorator.createDocument(currentSite);
         }
 
+        // TODO Hier schon abfangen, wenn HTML keine Daten enthält
+
         repPlanTable = repPlanHTML.getRepPageTable();
 
         if(SearchFieldEmpty()) {
