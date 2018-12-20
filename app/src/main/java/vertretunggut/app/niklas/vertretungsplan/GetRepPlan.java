@@ -102,25 +102,25 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         int currColumn = 1;
         for (Element currentData : allDataInCurrentLine) {
             switch(currColumn){
-                case 3:
+                case 1:
                     hour = currentData.text();
                     break;
-                case 4:
+                case 2:
                     teacher = currentData.text();
                     break;
-                case 5:
+                case 3:
                     subject = currentData.text();
                     break;
-                case 6:
+                case 4:
                     room = currentData.text();
                     break;
-                case 7:
+                case 5:
                     schoolClass = currentData.text();
                     break;
-                case 9:
+                case 6:
                     type = currentData.text();
                     break;
-                case 11:
+                case 7:
                     message = currentData.text();
                     break;
                 default:
