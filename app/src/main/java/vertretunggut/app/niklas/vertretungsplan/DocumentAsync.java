@@ -19,7 +19,7 @@ public class DocumentAsync extends AsyncTask<Void, Void, Document> {
 
         try {
            return Jsoup.connect(URL)
-                   .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
+                   .userAgent("Mozilla")
                    .referrer("http://www.google.de")
                    .ignoreHttpErrors(true)
                    .get();

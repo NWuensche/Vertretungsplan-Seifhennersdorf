@@ -86,11 +86,12 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     private void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
             Elements allDataInCurrentLine = RepPlanDocumentDecorator.extract(currentLine);
-            parseAndStoreDataInLine(allDataInCurrentLine);
+            parseAndStoreDataInLine(allDataInCurrentLine, "", false);
         }
     }
 
-    private void parseAndStoreDataInLine(Elements allDataInCurrentLine) {
+    //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
+    private void parseAndStoreDataInLine(Elements allDataInCurrentLine, String lastSetHour, boolean isSearch) {
         RepPlanLine line;
         String hour = "";
         String teacher = "";
@@ -103,7 +104,11 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         for (Element currentData : allDataInCurrentLine) {
             switch(currColumn){
                 case 1:
-                    hour = currentData.text();
+                    if (isSearch) {
+                        hour = lastSetHour;
+                    } else {
+                        hour = currentData.text();
+                    }
                     break;
                 case 2:
                     teacher = currentData.text();
@@ -136,15 +141,22 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     private void startSearch(Elements repPlanTable, String search) {
         boolean isFirstLine = true;
+        String lastSetHour = "";
         for (Element Zeile : repPlanTable) {
             Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
             if(isFirstLine) {
                 isFirstLine = false;
                 continue;
             }
+
+            // Store last hour that was set
+            if(!((Element) EinzelnZeile.toArray()[0]).text().replace("\u00A0", "").isEmpty()) {
+                lastSetHour = ((Element) EinzelnZeile.toArray()[0]).text().replace("\u00A0", "");
+            }
+
             for (Element data : EinzelnZeile) {
                 if(dataContainsSearch(data.text(), search)){
-                    parseAndStoreDataInLine(EinzelnZeile);
+                    parseAndStoreDataInLine(EinzelnZeile, lastSetHour, true);
                     break;
                 }
             }

@@ -71,17 +71,11 @@ public class RepPlanDocumentDecorator {
 
     public static RepPlanDocumentDecorator createDocument(int SiteNumber) {
         Document doc = null;
-
-       /* try {
-            doc = new DocumentAsync("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html").execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        
+       // Doesn't work for some reason when using DocumentAsync also here
         try {
             doc = Jsoup.connect("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + SiteNumber + ".html")
-                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
+                    .userAgent("Mozilla")
                     .referrer("http://www.google.de")
                     .ignoreHttpErrors(true)
                     .get();
