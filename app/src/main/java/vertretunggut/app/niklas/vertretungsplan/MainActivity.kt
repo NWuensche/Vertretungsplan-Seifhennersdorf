@@ -184,12 +184,18 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
     fun loadNewSite(currentSite: Int, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
+            //onPreExecution
             val loadingDialog = LoadingDialog(this@MainActivity)
             loadingDialog.buildDialog()
+
+            //doInBackground
             GlobalScope.launch(Dispatchers.IO) {
                 getK = GetK(currentSite, searchForToday)
             }.join()
             loadingDialog.close()
+            if (search.isEmpty()) {
+                
+            }
         }
     }
 }
