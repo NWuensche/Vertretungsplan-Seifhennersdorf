@@ -11,7 +11,7 @@ import org.jsoup.select.Elements
 import java.io.IOException
 import java.util.*
 
-class GetK (var currentSite: Int) {
+class GetK (var currentSite: Int, val searchForToday: Boolean) {
     companion object {
         private val FIRST_SITE = 1
     }
@@ -20,32 +20,37 @@ class GetK (var currentSite: Int) {
     var repPlanTable: Option<Elements> = Option.empty()
     init {
         val firstDoc = getDoc(currentSite)
-        //Jump to today, if possible
-        repPlanHTML = firstDoc.map { fDoc ->
-            val firstRepPlanHTML = RepPlanDocumentDecorator(fDoc)
-            val difference = differenceToToday(firstRepPlanHTML)
-            if (difference > 0) {
-                val approxCurrentSite = difference % 5 + 1
-                val newDoc = getDoc(approxCurrentSite)
-                //When approximated current day is not available, use the old site again
-                newDoc.fold(
-                        {
-                            repPlanTable = Some(firstRepPlanHTML.repPageTable)
-                            firstRepPlanHTML
+        repPlanHTML = firstDoc.map { RepPlanDocumentDecorator(it) }
+        repPlanTable = repPlanHTML.map { it.repPageTable }
 
-                        },
-                        { nDoc ->
-                            currentSite = approxCurrentSite
-                            val newRepPlan = RepPlanDocumentDecorator(nDoc)
-                            repPlanTable = Some(newRepPlan.repPageTable)
-                            newRepPlan
-                        }
-                )
-            } else {
-                firstRepPlanHTML
-            }
+        if (searchForToday) {
+            //Jump to today, if possible
+            //TODO Ein bisschen Redundant mit oben
+            repPlanHTML = firstDoc.map { fDoc ->
+                val firstRepPlanHTML = RepPlanDocumentDecorator(fDoc)
+                val difference = differenceToToday(firstRepPlanHTML)
+                if (difference > 0) {
+                    val approxCurrentSite = difference % 5 + 1
+                    val newDoc = getDoc(approxCurrentSite)
+                    //When approximated current day is not available, use the old site again
+                    newDoc.fold(
+                            {
+                                repPlanTable = Some(firstRepPlanHTML.repPageTable)
+                                firstRepPlanHTML
+                            },
+                            { nDoc ->
+                                currentSite = approxCurrentSite
+                                val newRepPlan = RepPlanDocumentDecorator(nDoc)
+                                repPlanTable = Some(newRepPlan.repPageTable)
+                                newRepPlan
+                            }
+                    )
+                } else {
+                    firstRepPlanHTML
+                }
         }
 
+        }
     }
 
     private fun differenceToToday(repPlanHTML: RepPlanDocumentDecorator): Int {

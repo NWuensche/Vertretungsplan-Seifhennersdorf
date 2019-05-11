@@ -53,14 +53,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         currentRepPlanSite = FIRST_SITE
         var doc: Option<Document> = Option.empty()
-        GlobalScope.launch (Dispatchers.Main) {
-            val loadingDialog = LoadingDialog(this@MainActivity)
-            loadingDialog.buildDialog()
-            GlobalScope.launch (Dispatchers.IO) {
-                getK = GetK(currentRepPlanSite)
-            }.join()
-            loadingDialog.close()
-        }
+
+        loadNewSite(currentRepPlanSite, true)
+
         repPlanGetter = GetRepPlan(this, currentRepPlanSite)
         noNetwork = NoNetworkHandler(this)
 
@@ -186,5 +181,15 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     fun setCurrentRepPlanSite(site: Int) {
         this.currentRepPlanSite = site
+    }
+    fun loadNewSite(currentSite: Int, searchForToday: Boolean = false) {
+        GlobalScope.launch (Dispatchers.Main) {
+            val loadingDialog = LoadingDialog(this@MainActivity)
+            loadingDialog.buildDialog()
+            GlobalScope.launch(Dispatchers.IO) {
+                getK = GetK(currentSite, searchForToday)
+            }.join()
+            loadingDialog.close()
+        }
     }
 }
