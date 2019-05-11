@@ -49,8 +49,8 @@ public class RepPlanDocumentDecorator {
     public static RepPlanDocumentDecorator createTodaysDocument(MainActivity activity) {
         int currentSite = FIRST_SITE;
         RepPlanDocumentDecorator firstRepPlanHTML = createDocument(currentSite);
-        DayOfWeek WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(firstRepPlanHTML);
-        DayOfWeek WochenTagHeute = DayOfWeek.getTodaysDayOfWeek();
+        DayOfWeek WochenTagVer = DayOfWeek.Companion.getDayOfWeekOfRepPlan(firstRepPlanHTML);
+        DayOfWeek WochenTagHeute = DayOfWeek.Companion.getTodaysDayOfWeek();
 
         int Difference = WochenTagHeute.getDifferenceTo(WochenTagVer);
         if (Difference > 0) {
