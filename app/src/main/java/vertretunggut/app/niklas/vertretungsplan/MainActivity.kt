@@ -51,10 +51,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         currentRepPlanSite = FIRST_SITE
         var doc: Option<Document> = Option.empty()
+        var getK: GetK? = null
         GlobalScope.launch (Dispatchers.Main) {
             val loadingDialog = LoadingDialog(this@MainActivity)
             loadingDialog.buildDialog()
-            doc=getDoc(currentRepPlanSite)
+            getK = GetK(currentRepPlanSite)
             loadingDialog.close()
         }
         repPlanGetter = GetRepPlan(this, currentRepPlanSite)
@@ -182,25 +183,5 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     fun setCurrentRepPlanSite(site: Int) {
         this.currentRepPlanSite = site
-    }
-
-    private suspend fun getDoc(currentSite: Int): Option<Document> {
-        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currentSite.html"
-        var docO: Option<Document> = Option.empty()
-        val job = GlobalScope.launch  {
-                try {
-                    val doc = Jsoup.connect(url)
-                            .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                            .referrer("http://www.google.de")
-                            .ignoreHttpErrors(true)
-                            .get()
-                    docO = Option.just(doc)
-                } catch (e: IOException) {
-                    docO = Option.empty()
-                }
-        }
-        job.join()
-        Log.e("TEST", if (docO.isDefined()) "DEF" else "NOT Def")
-        return docO
     }
 }
