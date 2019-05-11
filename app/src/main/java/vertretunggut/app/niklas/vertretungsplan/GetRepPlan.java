@@ -60,10 +60,10 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
 
         if(mainActivity.isFirstThread()) {
-            repPlanHTML = RepPlanDocumentDecorator.createTodaysDocument(mainActivity);
+            repPlanHTML = RepPlanDocumentDecorator.Companion.createTodaysDocument(mainActivity);
         }
         else{
-            repPlanHTML = RepPlanDocumentDecorator.createDocument(currentSite);
+            repPlanHTML = RepPlanDocumentDecorator.Companion.createDocument(currentSite);
         }
 
         // TODO Hier schon abfangen, wenn HTML keine Daten enthält
@@ -101,7 +101,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
     private void parseAndStoreRepPageTable(Elements table) {
         for (Element currentLine : table) {
-            Elements allDataInCurrentLine = RepPlanDocumentDecorator.extract(currentLine);
+            Elements allDataInCurrentLine = RepPlanDocumentDecorator.Companion.extract(currentLine);
             parseAndStoreDataInLine(allDataInCurrentLine, "", false);
         }
     }
@@ -159,7 +159,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         boolean isFirstLine = true;
         String lastSetHour = "";
         for (Element Zeile : repPlanTable) {
-            Elements EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile);
+            Elements EinzelnZeile = RepPlanDocumentDecorator.Companion.extract(Zeile);
             if(isFirstLine) {
                 isFirstLine = false;
                 continue;
