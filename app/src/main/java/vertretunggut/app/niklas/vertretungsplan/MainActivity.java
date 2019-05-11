@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void handleNetworkAndStartGetter(){
-        if(NoNetworkHandler.isNetworkAvailable(this)) {
+        if(NoNetworkHandler.Companion.isNetworkAvailable(this)) {
             noNetwork.disableNoNetworkView();
         }
         else{

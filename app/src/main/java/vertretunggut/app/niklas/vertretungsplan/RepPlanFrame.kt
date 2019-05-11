@@ -1,6 +1,5 @@
 package vertretunggut.app.niklas.vertretungsplan
 
-import android.support.design.widget.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
