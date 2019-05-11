@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private var firstTimeStarted = true
     private val FIRST_SITE = 1
     private var noNetwork: NoNetworkHandler? = null
+    var getK: GetK? = null
+
 
     val isFirstThread: Boolean
         get() {
@@ -51,11 +53,12 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         currentRepPlanSite = FIRST_SITE
         var doc: Option<Document> = Option.empty()
-        var getK: GetK? = null
         GlobalScope.launch (Dispatchers.Main) {
             val loadingDialog = LoadingDialog(this@MainActivity)
             loadingDialog.buildDialog()
-            getK = GetK(currentRepPlanSite)
+            GlobalScope.launch (Dispatchers.IO) {
+                getK = GetK(currentRepPlanSite)
+            }.join()
             loadingDialog.close()
         }
         repPlanGetter = GetRepPlan(this, currentRepPlanSite)

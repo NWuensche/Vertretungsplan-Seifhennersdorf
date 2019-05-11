@@ -16,29 +16,35 @@ class GetK (var currentSite: Int) {
         private val FIRST_SITE = 1
     }
 
-    var currDoc: Option<Document> = getDoc(currentSite)
-    val repPlanHTML: Option<RepPlanDocumentDecorator> = currDoc.map { RepPlanDocumentDecorator(it) }
+    var repPlanHTML: Option<RepPlanDocumentDecorator> = Option.empty()
+    var repPlanTable: Option<Elements> = Option.empty()
     init {
-        val repPlanTable: Elements
-        repPlanHTML.map { repPlanHTML ->
-            val difference = differenceToToday(repPlanHTML)
+        val firstDoc = getDoc(currentSite)
+        //Jump to today, if possible
+        repPlanHTML = firstDoc.map { fDoc ->
+            val firstRepPlanHTML = RepPlanDocumentDecorator(fDoc)
+            val difference = differenceToToday(firstRepPlanHTML)
             if (difference > 0) {
                 val approxCurrentSite = difference % 5 + 1
                 val newDoc = getDoc(approxCurrentSite)
                 //When approximated current day is not available, use the old site again
-                when(newDoc) {
-                    is Some -> {
-                        currentSite = approxCurrentSite
-                        RepPlanDocumentDecorator(newDoc.t)
-                    }
-                    else -> {
-                        currentSite = FIRST_SITE
-                        repPlanHTML
-                    }
-                }
+                newDoc.fold(
+                        {
+                            repPlanTable = Some(firstRepPlanHTML.repPageTable)
+                            firstRepPlanHTML
+
+                        },
+                        { nDoc ->
+                            currentSite = approxCurrentSite
+                            val newRepPlan = RepPlanDocumentDecorator(nDoc)
+                            repPlanTable = Some(newRepPlan.repPageTable)
+                            newRepPlan
+                        }
+                )
+            } else {
+                firstRepPlanHTML
             }
         }
-
 
     }
 

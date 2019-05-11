@@ -58,7 +58,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         Elements repPlanTable;
         //repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO Endlosloop
 
-
+        //TODO Brauch ich das?
         if(mainActivity.isFirstThread()) {
             repPlanHTML = RepPlanDocumentDecorator.Companion.createTodaysDocument(mainActivity);
         }
