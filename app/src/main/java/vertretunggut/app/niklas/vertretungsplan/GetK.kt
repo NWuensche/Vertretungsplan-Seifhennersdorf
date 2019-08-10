@@ -114,6 +114,7 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
         return Option.empty()
     }
 
+    //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
     fun startSearch(search: String): List<RepPlanLine> {
         var isFirstLine = true
         var lastSetHour = ""

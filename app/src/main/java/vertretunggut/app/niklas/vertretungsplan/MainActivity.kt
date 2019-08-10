@@ -32,49 +32,36 @@ import kotlin.system.exitProcess
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     var search = ""
-        private set
-    private var firstTimeStarted = true
+        private set //TODO Better
     private val FIRST_SITE = 1
     private var currentRepPlanSite: Int = FIRST_SITE
-    private var noNetwork: NoNetworkHandler? = null
     private var getK: GetK? = null
-
-
-    val isFirstThread: Boolean
-        get() {
-            val firstTimeStartedTmp = firstTimeStarted
-            firstTimeStarted = false
-            return firstTimeStartedTmp
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         currentRepPlanSite = FIRST_SITE
-        var doc: Option<Document> = Option.empty()
 
         loadNewSite(currentRepPlanSite, true)
 
-//        repPlanGetter = GetRepPlan(this, currentRepPlanSite)
-        noNetwork = NoNetworkHandler(this)
-
-        handleNetworkAndStartGetter()
+        handleNetworkAndStartGetter(NoNetworkHandler(this))
     }
 
-    fun handleNetworkAndStartGetter() {
+    fun handleNetworkAndStartGetter(nnH: NoNetworkHandler) {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
         val connected = if (connectivityManager is ConnectivityManager) {
             val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
             networkInfo?.isConnected ?: false
         } else false
         if (connected) {
-            noNetwork!!.disableNoNetworkView()
+            nnH.disableNoNetworkView()
         } else {
-            noNetwork!!.showNoNetworkView()
+            nnH.showNoNetworkView()
         }
 
     }
+    //TODO search drin title wrong
 
     fun increaseCurrentRepPlanSite() {
         currentRepPlanSite++

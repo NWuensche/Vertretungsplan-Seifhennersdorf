@@ -23,7 +23,7 @@ class NoNetworkHandler(private val activity: MainActivity) {
         activity.layout_of_reps.visibility = View.GONE
         activity.loadingPanel.visibility = View.GONE
 
-        activity.noNetworkRetry.setOnClickListener { activity.handleNetworkAndStartGetter() }
+        activity.noNetworkRetry.setOnClickListener { activity.handleNetworkAndStartGetter(this) }
     }
 
     fun disableNoNetworkView() {
