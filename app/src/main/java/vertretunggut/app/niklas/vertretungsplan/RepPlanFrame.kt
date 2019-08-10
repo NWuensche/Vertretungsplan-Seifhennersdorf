@@ -4,6 +4,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Created by nwuensche on 26.09.16.
+ * MainAcitivity wrapper
  */
 class RepPlanFrame(private val activity: MainActivity) {
     private val prevDay = activity.prev_day_button
@@ -14,7 +15,6 @@ class RepPlanFrame(private val activity: MainActivity) {
         nextDay.setOnClickListener { nextDayButtonPressed() }
     }
 
-    //TODO search next
     fun enableMoveButtons() {
         nextDay.show()
         prevDay.show()

@@ -17,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.Toast
 import arrow.core.Option
 
 import mehdi.sakout.aboutpage.AboutPage
@@ -28,6 +29,8 @@ import kotlinx.coroutines.launch
 import org.jsoup.nodes.Document
 import kotlin.system.exitProcess
 
+fun Context.toast(message: CharSequence) =
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 

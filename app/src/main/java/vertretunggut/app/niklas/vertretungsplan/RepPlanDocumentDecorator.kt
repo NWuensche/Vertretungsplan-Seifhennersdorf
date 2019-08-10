@@ -21,17 +21,6 @@ class RepPlanDocumentDecorator {
     val repPageTable: Elements
         get() = repPlan!!.select(".list-table tr")
 
-    constructor(URL: String) {
-        try {
-            repPlan = DocumentAsync().execute(URL).get()
-        } catch (e: ExecutionException) {
-            e.printStackTrace()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-
-    }
-
     constructor(repPlan: Document) {
         this.repPlan = repPlan
     }

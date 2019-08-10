@@ -183,7 +183,7 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
         //TODO nonetwork buttons still there
 
         if (toastMessage != "Kein Internet") {
-            TextToast(parent, toastMessage).buildDialog()
+            parent.toast(toastMessage)
         }
     }
 
