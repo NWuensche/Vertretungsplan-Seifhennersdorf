@@ -14,6 +14,7 @@ class NoNetworkHandler(private val activity: MainActivity) {
     private val prevDay = activity.prev_day_button
     private val nextDay = activity.next_day_button
 
+    //TODO Check show NoNetwork when prev/next pressed
     fun showNoNetworkView() {
         activity.noNetworkLayout.visibility = View.VISIBLE
 

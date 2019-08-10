@@ -1,7 +1,10 @@
 package vertretunggut.app.niklas.vertretungsplan
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.MenuItemCompat
@@ -58,14 +61,19 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         loadNewSite(currentRepPlanSite, true)
 
-        /*repPlanGetter = GetRepPlan(this, currentRepPlanSite)
+//        repPlanGetter = GetRepPlan(this, currentRepPlanSite)
         noNetwork = NoNetworkHandler(this)
 
-        handleNetworkAndStartGetter()*/
+        handleNetworkAndStartGetter()
     }
 
     fun handleNetworkAndStartGetter() {
-        if (NoNetworkHandler.isNetworkAvailable(this)) {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
+        val connected = if (connectivityManager is ConnectivityManager) {
+            val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+            networkInfo?.isConnected ?: false
+        } else false
+        if (connected) {
             noNetwork!!.disableNoNetworkView()
         } else {
             noNetwork!!.showNoNetworkView()
@@ -175,15 +183,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         return item
     }
 
-    fun restartRepPlanGetter() {
-        repPlanGetter!!.cancel(true)
-        repPlanGetter = GetRepPlan(this, currentRepPlanSite)
-        repPlanGetter!!.execute()
+    fun restartRepPlanGetter(site: Int = FIRST_SITE) {
+        loadNewSite(site)
     }
 
     fun setCurrentRepPlanSite(site: Int) {
         this.currentRepPlanSite = site
     }
+
     fun loadNewSite(currentSite: Int, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
             //onPreExecution
@@ -199,7 +206,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             var tableToShow = emptyList<RepPlanLine>()
             if (search.isEmpty()) {
                tableToShow = getK?.parseAndStoreRepPageTable() ?: emptyList<RepPlanLine>()
-            } //TODO else case L72
+            } //TODO else case Line 72
             showTable(tableToShow)
         }
     }
