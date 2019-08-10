@@ -11,26 +11,28 @@ import kotlinx.android.synthetic.main.activity_main.*
  * Created by nwuensche on 26.09.16.
  */
 class NoNetworkHandler(private val activity: MainActivity) {
-    private val prevDay = activity.prev_day_button
-    private val nextDay = activity.next_day_button
+    //private val prevDay = activity.prev_day_button
+    //private val nextDay = activity.next_day_button
 
     //TODO Check show NoNetwork when prev/next pressed
     fun showNoNetworkView() {
         activity.noNetworkLayout.visibility = View.VISIBLE
 
-        prevDay.hide()
-        nextDay.hide()
+        activity.prev_day_button.hide()
+        activity.next_day_button.hide()
         activity.layout_of_reps.visibility = View.GONE
         activity.loadingPanel.visibility = View.GONE
 
         activity.noNetworkRetry.setOnClickListener { activity.handleNetworkAndStartGetter(this) }
+
+        activity.supportActionBar!!.title = "Kein Internet"
     }
 
     fun disableNoNetworkView() {
         activity.noNetworkLayout.visibility = View.GONE
 
-        prevDay.show()
-        nextDay.show()
+        activity.prev_day_button.show()
+        activity.next_day_button.show()
         activity.layout_of_reps.visibility = View.VISIBLE
         activity.loadingPanel.visibility = View.VISIBLE
 

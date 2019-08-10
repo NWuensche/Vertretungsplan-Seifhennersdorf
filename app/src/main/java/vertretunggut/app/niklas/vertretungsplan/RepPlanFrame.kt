@@ -14,6 +14,7 @@ class RepPlanFrame(private val activity: MainActivity) {
         nextDay.setOnClickListener { nextDayButtonPressed() }
     }
 
+    //TODO search next
     fun enableMoveButtons() {
         nextDay.show()
         prevDay.show()

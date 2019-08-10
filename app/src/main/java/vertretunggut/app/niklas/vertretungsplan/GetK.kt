@@ -5,14 +5,11 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.getOrElse
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
-import java.util.*
 
 class GetK (var currentSite: Int, searchForToday: Boolean) {
 
@@ -147,15 +144,21 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
         return data.contains(search.toLowerCase())
     }
 
-    fun updateTitleBarTitle(parent: MainActivity) {
+    fun updateTitleBarTitle(parent: MainActivity, internetConnected: Boolean = true) {
         val titleBar = RepPlanFrame(parent)
 
-        val headerTitle: String
-        titleBar.enableMoveButtons()
+        var headerTitle: String
+        if (internetConnected) {
+            titleBar.enableMoveButtons()
+        }
 
         val somethingInTable = parent.list_view.adapter.count != 0
+        //TODO Problem when in search and next day with titlebar
         if (nothingToShow(somethingInTable)) {
             headerTitle = "Kein Inhalt"
+            if (!internetConnected) {
+                headerTitle = "Keine Internetverbindung"
+            }
             createDialogAndMaybeDisableButton(titleBar, parent)
         } else {
             headerTitle = repPlanHTML.map{it.tableTitle}.getOrElse { "Kein Inhalt" }
@@ -166,18 +169,22 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
 
     fun createDialogAndMaybeDisableButton(titleBar: RepPlanFrame, parent:MainActivity) {
         val somethingInTable = parent.list_view.adapter.count != 0
-        val title = repPlanHTML.map {
+        val toastMessage = repPlanHTML.map {
             if (!it.repPlanAvailable()) {
                 titleBar.disableLastPressedButton()
                 "Keine Vertretungen für diesen Tag"
             } else if (searchFoundNothing(somethingInTable)) {
+                parent.supportActionBar!!.title = it.tableTitle
                 "Keine Vertretungen für " + parent.search + " an diesem Tag."
             } else {
                 ""
             }
-        }.getOrElse { "" }
+        }.getOrElse { "Kein Internet" } // Looks like it only happens when there is no Internet
+        //TODO nonetwork buttons still there
 
-        TextToast(parent, title).buildDialog()
+        if (toastMessage != "Kein Internet") {
+            TextToast(parent, toastMessage).buildDialog()
+        }
     }
 
     fun searchFoundNothing(somethingInTable: Boolean): Boolean {

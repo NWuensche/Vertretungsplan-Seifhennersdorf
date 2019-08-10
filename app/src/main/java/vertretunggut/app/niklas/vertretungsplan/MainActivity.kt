@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private val FIRST_SITE = 1
     private var currentRepPlanSite: Int = FIRST_SITE
     private var getK: GetK? = null
+    var connectedToInternet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
             networkInfo?.isConnected ?: false
         } else false
+        connectedToInternet = connected
         if (connected) {
             nnH.disableNoNetworkView()
         } else {
@@ -183,7 +185,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
             }.join()
             renderTableWithSearch(search,getK)
-            getK?.updateTitleBarTitle(this@MainActivity)
+            getK?.updateTitleBarTitle(this@MainActivity, connectedToInternet)
             loadingDialog.close()
         }
     }
