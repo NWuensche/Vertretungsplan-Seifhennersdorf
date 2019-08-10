@@ -16,9 +16,7 @@ import java.util.ArrayList
 class RepPlanAdapter(context: Context, lines: ArrayList<RepPlanLine>) : ArrayAdapter<RepPlanLine>(context, 0, lines) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val convertView = if (convertView != null)
-            convertView
-            else LayoutInflater.from(context).inflate(R.layout.list_row, parent, false)
+        val convertView = convertView ?: LayoutInflater.from(context).inflate(R.layout.list_row, parent, false)
 
         val line = getItem(position)
 

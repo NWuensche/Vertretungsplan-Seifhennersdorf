@@ -11,10 +11,11 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
 
-class GetK (var currentSite: Int, searchForToday: Boolean) {
+class Plan (var currentSite: Int, searchForToday: Boolean) {
 
     var repPlanHTML: Option<RepPlanDocumentDecorator> = Option.empty()
     var repPlanTable: Option<Elements> = Option.empty()
+
     init {
         val firstDoc = getDoc(currentSite)
         repPlanHTML = firstDoc.map { RepPlanDocumentDecorator(it) }
@@ -145,11 +146,11 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
     }
 
     fun updateTitleBarTitle(parent: MainActivity, internetConnected: Boolean = true) {
-        val titleBar = RepPlanFrame(parent)
+        val titleBar = MainActivityWrapper(parent)
 
         var headerTitle: String
-        if (internetConnected) {
-            titleBar.enableMoveButtons()
+        if (!internetConnected) {
+            titleBar.hideMoveButtons()
         }
 
         val somethingInTable = parent.list_view.adapter.count != 0
@@ -167,7 +168,7 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
         titleBar.setTitle(headerTitle)
     }
 
-    fun createDialogAndMaybeDisableButton(titleBar: RepPlanFrame, parent:MainActivity) {
+    fun createDialogAndMaybeDisableButton(titleBar: MainActivityWrapper, parent:MainActivity) {
         val somethingInTable = parent.list_view.adapter.count != 0
         val toastMessage = repPlanHTML.map {
             if (!it.repPlanAvailable()) {
@@ -180,7 +181,6 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
                 ""
             }
         }.getOrElse { "Kein Internet" } // Looks like it only happens when there is no Internet
-        //TODO nonetwork buttons still there
 
         if (toastMessage != "Kein Internet") {
             parent.toast(toastMessage)
@@ -202,6 +202,3 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
 }
 
 //TODO How often DEF in log?
-fun Document.isAvailable(): Boolean {
-    return select(".list-table-caption").text().isNotEmpty()
-}

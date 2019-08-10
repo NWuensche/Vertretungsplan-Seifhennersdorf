@@ -11,19 +11,13 @@ import java.util.concurrent.ExecutionException
 /**
  * Created by nwuensche on 26.09.16.
  */
-class RepPlanDocumentDecorator {
-
-    private var repPlan: Document? = null
+class RepPlanDocumentDecorator(private val repPlan: Document) {
 
     val tableTitle: String
-        get() = repPlan!!.select(".list-table-caption").text()
+        get() = repPlan.select(".list-table-caption").text()
 
     val repPageTable: Elements
-        get() = repPlan!!.select(".list-table tr")
-
-    constructor(repPlan: Document) {
-        this.repPlan = repPlan
-    }
+        get() = repPlan.select(".list-table tr")
 
     fun repPlanAvailable(): Boolean {
         return tableTitle != ""
@@ -36,6 +30,7 @@ class RepPlanDocumentDecorator {
             return line.select("td")
         }
 
+        //TODO Use this
         fun createTodaysDocument(activity: MainActivity): RepPlanDocumentDecorator {
             var currentSite = FIRST_SITE
             var firstRepPlanHTML = createDocument(currentSite)
@@ -71,7 +66,7 @@ class RepPlanDocumentDecorator {
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            //TODO Nicht mit !! machen
+
             return RepPlanDocumentDecorator(doc!!)
         }
     }

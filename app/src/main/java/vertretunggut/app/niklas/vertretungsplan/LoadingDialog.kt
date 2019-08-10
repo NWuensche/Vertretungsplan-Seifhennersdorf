@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 /**
  * Created by nwuensche on 26.09.16.
  */
-class LoadingDialog(internal var activity: MainActivity) : DialogBuilder {
+class LoadingDialog(private var activity: MainActivity) : DialogBuilder {
 
     override fun buildDialog() {
         val loadingCircle = activity.progress_bar

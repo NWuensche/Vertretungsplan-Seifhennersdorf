@@ -1,12 +1,13 @@
 package vertretunggut.app.niklas.vertretungsplan
 
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Created by nwuensche on 26.09.16.
- * MainAcitivity wrapper
  */
-class RepPlanFrame(private val activity: MainActivity) {
+
+class MainActivityWrapper(private val activity: MainActivity) {
     private val prevDay = activity.prev_day_button
     private val nextDay = activity.next_day_button
 
@@ -15,7 +16,12 @@ class RepPlanFrame(private val activity: MainActivity) {
         nextDay.setOnClickListener { nextDayButtonPressed() }
     }
 
-    fun enableMoveButtons() {
+    fun hideMoveButtons() {
+        nextDay.hide()
+        prevDay.hide()
+    }
+
+    fun showMoveButtons() {
         nextDay.show()
         prevDay.show()
     }
@@ -40,7 +46,7 @@ class RepPlanFrame(private val activity: MainActivity) {
         activity.decreaseCurrentRepPlanSite()
         nextDayButtonLastPressed = false
 
-        val connected = handleNetworkRight()
+        val connected = NoNetworkHandler(activity).isNetworkAvailable()
 
         if (connected) {
             activity.restartRepPlanGetter()
@@ -52,19 +58,45 @@ class RepPlanFrame(private val activity: MainActivity) {
         activity.increaseCurrentRepPlanSite()
         nextDayButtonLastPressed = true
 
-        val connected = handleNetworkRight()
-
+        val connected = NoNetworkHandler(activity).isNetworkAvailable()
         if (connected) {
             activity.loadNewSite()
         }
     }
 
-    fun handleNetworkRight(): Boolean {
-        if (!NoNetworkHandler.isNetworkAvailable(activity)) {
-            NoNetworkHandler(activity).showNoNetworkView()
-            return false
+    fun showNoInternetView() {
+        activity.noNetworkLayout.visibility = View.VISIBLE
+
+
+
+        activity.layout_of_reps.visibility = View.GONE
+        activity.loadingPanel.visibility = View.GONE
+
+        MainActivityWrapper(activity).apply {
+            hideMoveButtons()
+            setTitle("Kein Internet")
         }
-        return true
+        activity.noNetworkRetry.setOnClickListener { handleUINetwork() }
+    }
+
+    fun disableNoNetworkView() {
+        activity.noNetworkLayout.visibility = View.GONE
+
+
+        activity.layout_of_reps.visibility = View.VISIBLE
+        activity.loadingPanel.visibility = View.VISIBLE
+
+        showMoveButtons()
+
+        activity.restartRepPlanGetter()
+    }
+
+    fun handleUINetwork() {
+        if (NoNetworkHandler(activity).isNetworkAvailable()) {
+            disableNoNetworkView()
+        } else {
+            showNoInternetView()
+        }
     }
 
     companion object {

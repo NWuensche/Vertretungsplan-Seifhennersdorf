@@ -3,9 +3,7 @@ package vertretunggut.app.niklas.vertretungsplan
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.StringTokenizer
+import java.util.*
 
 /**
  * Created by nwuensche on 22.09.16.
@@ -49,7 +47,7 @@ enum class DayOfWeek constructor(val dayOfWeek: Int) {
             var dateParser: Date? = null // TODO besser
 
             try {
-                dateParser = SimpleDateFormat("dd.MM.yyyy").parse(date)
+                dateParser = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY).parse(date)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

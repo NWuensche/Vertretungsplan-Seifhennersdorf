@@ -6,19 +6,16 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
-import arrow.core.Option
 
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
@@ -26,7 +23,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jsoup.nodes.Document
 import kotlin.system.exitProcess
 
 fun Context.toast(message: CharSequence) =
@@ -38,8 +34,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         private set //TODO Better
     private val FIRST_SITE = 1
     private var currentRepPlanSite: Int = FIRST_SITE
-    private var getK: GetK? = null
-    var connectedToInternet = false
+    private var getK: Plan? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,23 +44,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         loadNewSite(currentRepPlanSite, true)
 
-        handleNetworkAndStartGetter(NoNetworkHandler(this))
+        MainActivityWrapper(this).handleUINetwork()
     }
 
-    fun handleNetworkAndStartGetter(nnH: NoNetworkHandler) {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE)
-        val connected = if (connectivityManager is ConnectivityManager) {
-            val networkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-            networkInfo?.isConnected ?: false
-        } else false
-        connectedToInternet = connected
-        if (connected) {
-            nnH.disableNoNetworkView()
-        } else {
-            nnH.showNoNetworkView()
-        }
-
-    }
     //TODO search drin title wrong
 
     fun increaseCurrentRepPlanSite() {
@@ -178,27 +159,25 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     fun loadNewSite(currentSite: Int = this.currentRepPlanSite, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
-            //onPreExecution
             val loadingDialog = LoadingDialog(this@MainActivity)
             loadingDialog.buildDialog()
 
-            //doInBackground
             GlobalScope.launch(Dispatchers.IO) {
-                getK = GetK(currentSite, searchForToday)
-
+                getK = Plan(currentSite, searchForToday)
             }.join()
+
             renderTableWithSearch(search,getK)
-            getK?.updateTitleBarTitle(this@MainActivity, connectedToInternet)
+            getK?.updateTitleBarTitle(this@MainActivity, NoNetworkHandler(this@MainActivity).isNetworkAvailable())
             loadingDialog.close()
         }
     }
 
-    private fun renderTableWithSearch(search: String, getK: GetK?) {
+    private fun renderTableWithSearch(search: String, getK: Plan?) {
         val tableToShow = getTableWithSearch(search, getK)
         showTable(tableToShow)
     }
 
-    private fun getTableWithSearch(search: String, getK: GetK?): List<RepPlanLine> {
+    private fun getTableWithSearch(search: String, getK: Plan?): List<RepPlanLine> {
         if (search.isEmpty()) {
             return getK?.parseAndStoreRepPageTable() ?: emptyList()
         } else {
@@ -210,6 +189,4 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val adapter = RepPlanAdapter(this, ArrayList(tableToShow))
         list_view.adapter = adapter
     }
-
-
 }
