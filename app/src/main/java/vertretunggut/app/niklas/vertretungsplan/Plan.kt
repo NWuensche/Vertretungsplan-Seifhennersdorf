@@ -12,19 +12,16 @@ import org.jsoup.select.Elements
 import java.io.IOException
 
 class Plan (var currentSite: Int, searchForToday: Boolean) {
+    var FIRST_SITE = 1
 
-    var repPlanHTML: Option<RepPlanDocumentDecorator> = Option.empty()
+    var repPlanDecorator: Option<RepPlanDocumentDecorator> = Option.empty()
     var repPlanTable: Option<Elements> = Option.empty()
 
     init {
         val firstDoc = getDoc(currentSite)
-        repPlanHTML = firstDoc.map { RepPlanDocumentDecorator(it) }
-        repPlanTable = repPlanHTML.map { it.repPageTable }
-
         if (searchForToday) {
             //Jump to today, if possible
-            //TODO Ein bisschen Redundant mit oben
-            repPlanHTML = firstDoc.map { fDoc ->
+            repPlanDecorator = firstDoc.map { fDoc ->
                 val firstRepPlanHTML = RepPlanDocumentDecorator(fDoc)
                 val difference = differenceToToday(firstRepPlanHTML)
                 if (difference > 0) {
@@ -46,8 +43,11 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
                 } else {
                     firstRepPlanHTML
                 }
-        }
+            }
 
+        } else {
+            repPlanDecorator = firstDoc.map { RepPlanDocumentDecorator(it) }
+            repPlanTable = repPlanDecorator.map { it.repPageTable }
         }
     }
 
@@ -60,8 +60,8 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
     }
 
     //Doc also empty when no title -> No timetable available
-    private fun getDoc(currentSite: Int): Option<Document> {
-        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currentSite.html"
+    private fun getDoc(newCurrSite: Int): Option<Document> {
+        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$newCurrSite.html"
         val docO: Option<Document> =
                 try {
                     val doc = Jsoup.connect(url)
@@ -78,6 +78,7 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
         Log.e("TEST", if (docO.isDefined()) "DEF" else "NOT Def")
         return docO
     }
+
 
     fun parseAndStoreRepPageTable(): List<RepPlanLine> {
        return repPlanTable.map { table ->
@@ -162,7 +163,7 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
             }
             createDialogAndMaybeDisableButton(titleBar, parent)
         } else {
-            headerTitle = repPlanHTML.map{it.tableTitle}.getOrElse { "Kein Inhalt" }
+            headerTitle = repPlanDecorator.map{it.tableTitle}.getOrElse { "Kein Inhalt" }
         }
 
         titleBar.setTitle(headerTitle)
@@ -170,7 +171,7 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
 
     fun createDialogAndMaybeDisableButton(titleBar: MainActivityWrapper, parent:MainActivity) {
         val somethingInTable = parent.list_view.adapter.count != 0
-        val toastMessage = repPlanHTML.map {
+        val toastMessage = repPlanDecorator.map {
             if (!it.repPlanAvailable()) {
                 titleBar.disableLastPressedButton()
                 "Keine Vertretungen für diesen Tag"
@@ -188,13 +189,13 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
     }
 
     fun searchFoundNothing(somethingInTable: Boolean): Boolean {
-        return repPlanHTML.map {
+        return repPlanDecorator.map {
              it.repPlanAvailable() && !somethingInTable
         }.getOrElse { true }
     }
 
     fun nothingToShow(somethingInTable: Boolean): Boolean {
-        return repPlanHTML.map {
+        return repPlanDecorator.map {
             !it.repPlanAvailable() || searchFoundNothing(somethingInTable)
         }.getOrElse { true }
     }
