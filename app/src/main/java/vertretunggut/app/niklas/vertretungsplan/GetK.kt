@@ -98,42 +98,26 @@ class GetK (var currentSite: Int, val searchForToday: Boolean) {
 
     //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
     private fun parseAndStoreDataInLine(allDataInCurrentLine: Elements, lastSetHour: String, isSearch: Boolean): Option<RepPlanLine> {
-        val line: RepPlanLine
-        var hour = ""
-        var teacher = ""
-        var subject = ""
-        var room = ""
-        var schoolClass = ""
-        var type = ""
-        var message = ""
-        var currColumn = 1
-        for (currentData in allDataInCurrentLine) {
-            when (currColumn) {
-                1 -> if (isSearch) {
-                    hour = lastSetHour
-                } else {
-                    hour = currentData.text()
-                }
-                2 -> teacher = currentData.text()
-                3 -> subject = currentData.text()
-                4 -> room = currentData.text()
-                5 -> schoolClass = currentData.text()
-                6 -> type = currentData.text()
-                7 -> message = currentData.text()
-                else -> {
-                }
-            }
-            currColumn++
-        }
-        line = RepPlanLine(hour, teacher, subject, room, schoolClass, type, message)
-        if (!line.isEmpty) {
-            return Option.just(line)
-        }
+        if (allDataInCurrentLine.size == 0) return Option.empty()
+        
+        val line = RepPlanLine(
+                hour = if (isSearch) lastSetHour else allDataInCurrentLine[0].text(), //Show everywhere hour if in search
+                teacher = allDataInCurrentLine[1].text(),
+                subject = allDataInCurrentLine[2].text(),
+                room = allDataInCurrentLine[3].text(),
+                schoolClass = allDataInCurrentLine[4].text(),
+                type = allDataInCurrentLine[5].text(),
+                message = allDataInCurrentLine[6].text()
+                )
+
+        if (!line.isEmpty) return Option.just(line)
+
         return Option.empty()
     }
 
 }
 
+//TODO How often DEF in log?
 fun Document.isAvailable(): Boolean {
     return select(".list-table-caption").text().isNotEmpty()
 }
