@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ListView
 import android.widget.RelativeLayout
 import arrow.core.Option
 
@@ -25,6 +26,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import java.io.IOException
 
 
@@ -56,10 +58,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         loadNewSite(currentRepPlanSite, true)
 
-        repPlanGetter = GetRepPlan(this, currentRepPlanSite)
+        /*repPlanGetter = GetRepPlan(this, currentRepPlanSite)
         noNetwork = NoNetworkHandler(this)
 
-        handleNetworkAndStartGetter()
+        handleNetworkAndStartGetter()*/
     }
 
     fun handleNetworkAndStartGetter() {
@@ -193,9 +195,19 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 getK = GetK(currentSite, searchForToday)
             }.join()
             loadingDialog.close()
-            if (search.isEmpty()) {
 
-            }
+            var tableToShow = emptyList<RepPlanLine>()
+            if (search.isEmpty()) {
+               tableToShow = getK?.parseAndStoreRepPageTable() ?: emptyList<RepPlanLine>()
+            } //TODO else case L72
+            showTable(tableToShow)
         }
     }
+
+    private fun showTable(tableToShow: List<RepPlanLine>) {
+        val adapter = RepPlanAdapter(this, ArrayList(tableToShow))
+        list_view.adapter = adapter
+    }
+
+
 }

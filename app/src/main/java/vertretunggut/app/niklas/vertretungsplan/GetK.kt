@@ -3,6 +3,7 @@ package vertretunggut.app.niklas.vertretungsplan
 import android.util.Log
 import arrow.core.Option
 import arrow.core.Some
+import arrow.core.getOrElse
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
@@ -80,6 +81,55 @@ class GetK (var currentSite: Int, val searchForToday: Boolean) {
                 }
         Log.e("TEST", if (docO.isDefined()) "DEF" else "NOT Def")
         return docO
+    }
+
+    fun parseAndStoreRepPageTable(): List<RepPlanLine> {
+       return repPlanTable.map { table ->
+            table
+                    .map {line ->
+                val allDataInCurrentLine = RepPlanDocumentDecorator.extract(line)
+                parseAndStoreDataInLine(allDataInCurrentLine, "", false)
+                    }
+                    .flatMap { it.toList() } //filter empty options
+        }
+                .getOrElse { emptyList() }
+
+    }
+
+    //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
+    private fun parseAndStoreDataInLine(allDataInCurrentLine: Elements, lastSetHour: String, isSearch: Boolean): Option<RepPlanLine> {
+        val line: RepPlanLine
+        var hour = ""
+        var teacher = ""
+        var subject = ""
+        var room = ""
+        var schoolClass = ""
+        var type = ""
+        var message = ""
+        var currColumn = 1
+        for (currentData in allDataInCurrentLine) {
+            when (currColumn) {
+                1 -> if (isSearch) {
+                    hour = lastSetHour
+                } else {
+                    hour = currentData.text()
+                }
+                2 -> teacher = currentData.text()
+                3 -> subject = currentData.text()
+                4 -> room = currentData.text()
+                5 -> schoolClass = currentData.text()
+                6 -> type = currentData.text()
+                7 -> message = currentData.text()
+                else -> {
+                }
+            }
+            currColumn++
+        }
+        line = RepPlanLine(hour, teacher, subject, room, schoolClass, type, message)
+        if (!line.isEmpty) {
+            return Option.just(line)
+        }
+        return Option.empty()
     }
 
 }
