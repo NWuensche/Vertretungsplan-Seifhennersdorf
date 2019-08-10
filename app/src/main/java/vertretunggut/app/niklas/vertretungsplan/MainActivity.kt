@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     var search = ""
         private set //TODO Better
     private val FIRST_SITE = 1
-    private var currentRepPlanSite: Int = FIRST_SITE
+    var currentRepPlanSite = FIRST_SITE
     private var getK: Plan? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,17 +153,13 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         loadNewSite(site)
     }
 
-    fun setCurrentRepPlanSite(site: Int) {
-        this.currentRepPlanSite = site
-    }
-
     fun loadNewSite(currentSite: Int = this.currentRepPlanSite, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
             val loadingDialog = LoadingDialog(this@MainActivity)
             loadingDialog.buildDialog()
 
             GlobalScope.launch(Dispatchers.IO) {
-                getK = Plan(currentSite, searchForToday)
+                getK = Plan(this@MainActivity , searchForToday)
             }.join()
 
             renderTableWithSearch(search,getK)

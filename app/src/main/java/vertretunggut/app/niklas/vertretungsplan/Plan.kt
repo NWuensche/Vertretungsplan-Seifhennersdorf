@@ -11,13 +11,13 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
 
-class Plan (var currentSite: Int, searchForToday: Boolean) {
-    var FIRST_SITE = 1
+class Plan (activity: MainActivity, searchForToday: Boolean) {
 
     var repPlanDecorator: Option<RepPlanDocumentDecorator> = Option.empty()
     var repPlanTable: Option<Elements> = Option.empty()
 
     init {
+        var currentSite = activity.currentRepPlanSite
         val firstDoc = getDoc(currentSite)
         if (searchForToday) {
             //Jump to today, if possible
@@ -43,12 +43,14 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
                 } else {
                     firstRepPlanHTML
                 }
+                //TODO Return currentSite
             }
 
         } else {
             repPlanDecorator = firstDoc.map { RepPlanDocumentDecorator(it) }
             repPlanTable = repPlanDecorator.map { it.repPageTable }
         }
+        activity.currentRepPlanSite = currentSite
     }
 
     private fun differenceToToday(repPlanHTML: RepPlanDocumentDecorator): Int {
@@ -60,8 +62,8 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
     }
 
     //Doc also empty when no title -> No timetable available
-    private fun getDoc(newCurrSite: Int): Option<Document> {
-        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$newCurrSite.html"
+    private fun getDoc(currSite: Int): Option<Document> {
+        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currSite.html"
         val docO: Option<Document> =
                 try {
                     val doc = Jsoup.connect(url)
@@ -79,6 +81,7 @@ class Plan (var currentSite: Int, searchForToday: Boolean) {
         return docO
     }
 
+    //TODO Buttons don't get reenabled
 
     fun parseAndStoreRepPageTable(): List<RepPlanLine> {
        return repPlanTable.map { table ->
