@@ -8,14 +8,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
 import java.util.*
 
-class GetK (var currentSite: Int, val searchForToday: Boolean) {
-    companion object {
-        private val FIRST_SITE = 1
-    }
+class GetK (var currentSite: Int, searchForToday: Boolean) {
 
     var repPlanHTML: Option<RepPlanDocumentDecorator> = Option.empty()
     var repPlanTable: Option<Elements> = Option.empty()
@@ -91,6 +89,7 @@ class GetK (var currentSite: Int, val searchForToday: Boolean) {
                 parseAndStoreDataInLine(allDataInCurrentLine, "", false)
                     }
                     .flatMap { it.toList() } //filter empty options
+           //TODO Make easier
         }
                 .getOrElse { emptyList() }
 
@@ -99,7 +98,7 @@ class GetK (var currentSite: Int, val searchForToday: Boolean) {
     //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
     private fun parseAndStoreDataInLine(allDataInCurrentLine: Elements, lastSetHour: String, isSearch: Boolean): Option<RepPlanLine> {
         if (allDataInCurrentLine.size == 0) return Option.empty()
-        
+
         val line = RepPlanLine(
                 hour = if (isSearch) lastSetHour else allDataInCurrentLine[0].text(), //Show everywhere hour if in search
                 teacher = allDataInCurrentLine[1].text(),
@@ -113,6 +112,38 @@ class GetK (var currentSite: Int, val searchForToday: Boolean) {
         if (!line.isEmpty) return Option.just(line)
 
         return Option.empty()
+    }
+
+    fun startSearch(search: String): List<RepPlanLine> {
+        var isFirstLine = true
+        var lastSetHour = ""
+        val rowsWithSearch = mutableListOf<Option<RepPlanLine>>()
+        for (Zeile in repPlanTable.toList().flatten()) {
+            val EinzelnZeile = RepPlanDocumentDecorator.extract(Zeile)
+            if (isFirstLine) {
+                isFirstLine = false
+                continue
+            }
+
+            // Store last hour that was set
+            if (!(EinzelnZeile.toTypedArray()[0] as Element).text().replace("\u00A0", "").isEmpty()) {
+                lastSetHour = (EinzelnZeile.toTypedArray()[0] as Element).text().replace("\u00A0", "")
+            }
+
+            for (data in EinzelnZeile) {
+                if (dataContainsSearch(data.text(), search)) {
+                    rowsWithSearch.add(parseAndStoreDataInLine(EinzelnZeile, lastSetHour, true))
+                    break
+                }
+            }
+        }
+        return rowsWithSearch.flatMap { it.toList() }
+    }
+
+    private fun dataContainsSearch(data: String, search: String): Boolean {
+        var data = data
+        data = data.toLowerCase()
+        return data.contains(search.toLowerCase())
     }
 
 }

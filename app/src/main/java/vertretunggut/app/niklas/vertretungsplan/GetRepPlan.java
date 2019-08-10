@@ -88,6 +88,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
     public void searchFor(String search){
         Elements repPlanTable = repPlanHTML.getRepPageTable();
 
+        //TODO Noch in Kotlin rein
         parsedRepPlanLines.clear();
         if(search.equals("")) {
             parseAndStoreRepPageTable(repPlanTable);

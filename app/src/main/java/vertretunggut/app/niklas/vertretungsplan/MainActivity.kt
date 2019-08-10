@@ -11,12 +11,10 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ListView
 import android.widget.RelativeLayout
 import arrow.core.Option
 
@@ -25,12 +23,9 @@ import mehdi.sakout.aboutpage.Element
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
-import java.io.IOException
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -38,11 +33,10 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private var currentRepPlanSite: Int = 0
     var search = ""
         private set
-    private var repPlanGetter: GetRepPlan? = null
     private var firstTimeStarted = true
     private val FIRST_SITE = 1
     private var noNetwork: NoNetworkHandler? = null
-    var getK: GetK? = null
+    private var getK: GetK? = null
 
 
     val isFirstThread: Boolean
@@ -96,7 +90,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val searchItem = menu.findItem(R.id.search)
         //TODO Old
         val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        searchView.setOnQueryTextListener(this)
+        searchView.setOnQueryTextListener(this) //TODO Ist das nötig
 
         return true
     }
@@ -122,7 +116,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     override fun onQueryTextChange(search: String): Boolean {
         // User changed the text
         this.search = search.replace("\\s+".toRegex(), "")
-        repPlanGetter!!.searchFor(this.search)
+        renderTableWithSearch(this.search, getK)
         return false
     }
 
@@ -130,7 +124,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         when (item.itemId) {
             R.id.About -> createAboutPage()
-            R.id.Exit -> System.exit(0)
+            R.id.Exit -> exitProcess(0)
         }
 
         return super.onOptionsItemSelected(item)
@@ -200,14 +194,36 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             //doInBackground
             GlobalScope.launch(Dispatchers.IO) {
                 getK = GetK(currentSite, searchForToday)
-            }.join()
-            loadingDialog.close()
 
-            var tableToShow = emptyList<RepPlanLine>()
-            if (search.isEmpty()) {
-               tableToShow = getK?.parseAndStoreRepPageTable() ?: emptyList<RepPlanLine>()
-            } //TODO else case Line 72
-            showTable(tableToShow)
+                //Can't use normal renderTableWithSearch here because isn't same thread anymore exception, still need normal function for search
+                fun getTableWithSearch(search: String, getK: GetK?): List<RepPlanLine> {
+                    if (search.isEmpty()) {
+                        return getK?.parseAndStoreRepPageTable() ?: emptyList()
+                    } else {
+                        return getK?.startSearch(search) ?: emptyList()
+                    }
+                }
+                fun renderTableWithSearch(search: String, getK: GetK?) {
+                    val tableToShow = getTableWithSearch(search, getK)
+                    showTable(tableToShow)
+                }
+                renderTableWithSearch(search,getK)
+            }.join()
+
+            loadingDialog.close()
+        }
+    }
+
+    private fun renderTableWithSearch(search: String, getK: GetK?) {
+        val tableToShow = getTableWithSearch(search, getK)
+        showTable(tableToShow)
+    }
+
+    private fun getTableWithSearch(search: String, getK: GetK?): List<RepPlanLine> {
+        if (search.isEmpty()) {
+            return getK?.parseAndStoreRepPageTable() ?: emptyList()
+        } else {
+            return getK?.startSearch(search) ?: emptyList()
         }
     }
 
