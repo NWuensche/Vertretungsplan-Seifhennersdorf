@@ -54,7 +54,7 @@ class RepPlanFrame(private val activity: MainActivity) {
         val connected = handleNetworkRight()
 
         if (connected) {
-            activity.restartRepPlanGetter()
+            activity.loadNewSite()
         }
     }
 

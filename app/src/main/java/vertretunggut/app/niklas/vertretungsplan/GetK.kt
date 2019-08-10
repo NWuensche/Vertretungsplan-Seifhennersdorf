@@ -4,6 +4,7 @@ import android.util.Log
 import arrow.core.Option
 import arrow.core.Some
 import arrow.core.getOrElse
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
@@ -70,10 +71,9 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
                         .referrer("http://www.google.de")
                         .ignoreHttpErrors(true)
                         .get()
-                    when {
-                        doc.isAvailable() -> Some(doc)
-                        else -> Option.empty()
-                    }
+                        Some(doc)
+                        /*when()...doc.isAvailable() -> Some(doc)
+                        else -> Option.empty()*/
                 } catch (e: IOException) {
                     Option.empty()
                 }
@@ -144,6 +144,51 @@ class GetK (var currentSite: Int, searchForToday: Boolean) {
         var data = data
         data = data.toLowerCase()
         return data.contains(search.toLowerCase())
+    }
+
+    fun updateTitleBarTitle(parent: MainActivity) {
+        val titleBar = RepPlanFrame(parent)
+
+        val headerTitle: String
+        titleBar.enableMoveButtons()
+
+        val somethingInTable = parent.list_view.adapter.count != 0
+        if (nothingToShow(somethingInTable)) {
+            headerTitle = "Kein Inhalt"
+            createDialogAndMaybeDisableButton(titleBar, parent)
+        } else {
+            headerTitle = repPlanHTML.map{it.tableTitle}.getOrElse { "Kein Inhalt" }
+        }
+
+        titleBar.setTitle(headerTitle)
+    }
+
+    fun createDialogAndMaybeDisableButton(titleBar: RepPlanFrame, parent:MainActivity) {
+        val somethingInTable = parent.list_view.adapter.count != 0
+        val title = repPlanHTML.map {
+            if (!it.repPlanAvailable()) {
+                titleBar.disableLastPressedButton()
+                "Keine Vertretungen für diesen Tag"
+            } else if (searchFoundNothing(somethingInTable)) {
+                "Keine Vertretungen für " + parent.search + " an diesem Tag."
+            } else {
+                ""
+            }
+        }.getOrElse { "" }
+
+        TextToast(parent, title).buildDialog()
+    }
+
+    fun searchFoundNothing(somethingInTable: Boolean): Boolean {
+        return repPlanHTML.map {
+             it.repPlanAvailable() && !somethingInTable
+        }.getOrElse { true }
+    }
+
+    fun nothingToShow(somethingInTable: Boolean): Boolean {
+        return repPlanHTML.map {
+            !it.repPlanAvailable() || searchFoundNothing(somethingInTable)
+        }.getOrElse { true }
     }
 
 }

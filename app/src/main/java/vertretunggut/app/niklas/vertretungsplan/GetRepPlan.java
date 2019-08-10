@@ -19,142 +19,26 @@ import java.util.ArrayList;
 /**
  * Created by nwuensche on 22.09.16.
  */
-public class GetRepPlan extends AsyncTask<Void, Void, Void> {
+public class GetRepPlan {
     private LoadingDialog loadingDialog;
     private ArrayList<RepPlanLine> parsedRepPlanLines;
     private MainActivity mainActivity;
     private int currentSite;
     private RepPlanDocumentDecorator repPlanHTML;
 
-    public GetRepPlan(MainActivity mainActivity, int currentSite) {
-        this.mainActivity = mainActivity;
-        this.currentSite = currentSite;
-        repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO make that better, I don't need this.
-        parsedRepPlanLines = new ArrayList<>();
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        loadingDialog = new LoadingDialog(mainActivity);
-        loadingDialog.buildDialog();
-    }
-
-
-    @Override
-    protected Void doInBackground(Void... params) {
-        String URL = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html";
-        try {
-            Document doc =  Jsoup.connect(URL)
-                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                    .referrer("http://www.google.de")
-                    .ignoreHttpErrors(true)
-                    .get();
-            repPlanHTML = new RepPlanDocumentDecorator(doc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Elements repPlanTable;
-        //repPlanHTML = new RepPlanDocumentDecorator("http://www.gymnasium-seifhennersdorf.de/files/V_DH_00" + currentSite + ".html"); // TODO Endlosloop
-
-        //TODO Brauch ich das?
+       /* //TODO Brauch ich das?
         if(mainActivity.isFirstThread()) {
             repPlanHTML = RepPlanDocumentDecorator.Companion.createTodaysDocument(mainActivity);
         }
         else{
             repPlanHTML = RepPlanDocumentDecorator.Companion.createDocument(currentSite);
-        }
-
-        // TODO Hier schon abfangen, wenn HTML keine Daten enthält
-
-        repPlanTable = repPlanHTML.getRepPageTable();
-
-        if(SearchFieldEmpty()) {
-            parseAndStoreRepPageTable(repPlanTable);
-        }
-        else {
-            startSearch(repPlanTable, mainActivity.getSearch());
-        }
-        return null;
-    }
+        }*/
 
     private boolean SearchFieldEmpty() {
         return mainActivity.getSearch().equals("");
     }
 
-
-
-    public void searchFor(String search){
-        Elements repPlanTable = repPlanHTML.getRepPageTable();
-
-        //TODO Noch in Kotlin rein
-        parsedRepPlanLines.clear();
-        if(search.equals("")) {
-            parseAndStoreRepPageTable(repPlanTable);
-        }
-        else{
-            startSearch(repPlanTable, search);
-        }
-        printRepPlan();
-
-    }
-
-    private void parseAndStoreRepPageTable(Elements table) {
-        for (Element currentLine : table) {
-            Elements allDataInCurrentLine = RepPlanDocumentDecorator.Companion.extract(currentLine);
-            parseAndStoreDataInLine(allDataInCurrentLine, "", false);
-        }
-    }
-
     //If in search, always use the last set hour as current Hour. lastSetHour is the last displayed hour in the table, so the current hour.
-    private void parseAndStoreDataInLine(Elements allDataInCurrentLine, String lastSetHour, boolean isSearch) {
-        RepPlanLine line;
-        String hour = "";
-        String teacher = "";
-        String subject = "";
-        String room = "";
-        String schoolClass = "";
-        String type = "";
-        String message = "";
-        int currColumn = 1;
-        for (Element currentData : allDataInCurrentLine) {
-            switch(currColumn){
-                case 1:
-                    if (isSearch) {
-                        hour = lastSetHour;
-                    } else {
-                        hour = currentData.text();
-                    }
-                    break;
-                case 2:
-                    teacher = currentData.text();
-                    break;
-                case 3:
-                    subject = currentData.text();
-                    break;
-                case 4:
-                    room = currentData.text();
-                    break;
-                case 5:
-                    schoolClass = currentData.text();
-                    break;
-                case 6:
-                    type = currentData.text();
-                    break;
-                case 7:
-                    message = currentData.text();
-                    break;
-                default:
-                    break;
-            }
-            currColumn++;
-        }
-        line = new RepPlanLine(hour, teacher, subject, room, schoolClass, type, message);
-        if(!line.isEmpty()){
-            parsedRepPlanLines.add(line);
-        }
-    }
 
     private void startSearch(Elements repPlanTable, String search) {
         boolean isFirstLine = true;
@@ -173,7 +57,7 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
 
             for (Element data : EinzelnZeile) {
                 if(dataContainsSearch(data.text(), search)){
-                    parseAndStoreDataInLine(EinzelnZeile, lastSetHour, true);
+                    //parseAndStoreDataInLine(EinzelnZeile, lastSetHour, true);
                     break;
                 }
             }
@@ -185,11 +69,9 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return data.contains(search.toLowerCase());
     }
 
-    @Override
     protected void onPostExecute(Void result) {
         updateTitleBarTitle();
 
-        printRepPlan();
         loadingDialog.close();
     }
 
@@ -232,10 +114,5 @@ public class GetRepPlan extends AsyncTask<Void, Void, Void> {
         return !repPlanHTML.repPlanAvailable() || searchFoundNothing();
     }
 
-    private void printRepPlan() {
-        RepPlanAdapter adapter = new RepPlanAdapter(mainActivity, parsedRepPlanLines);
-        ListView listOfReps = (ListView) mainActivity.findViewById(R.id.list_view);
-        listOfReps.setAdapter(adapter);
-    }
 
 }

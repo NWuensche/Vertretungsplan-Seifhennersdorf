@@ -11,6 +11,7 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -30,11 +31,11 @@ import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
-    private var currentRepPlanSite: Int = 0
     var search = ""
         private set
     private var firstTimeStarted = true
     private val FIRST_SITE = 1
+    private var currentRepPlanSite: Int = FIRST_SITE
     private var noNetwork: NoNetworkHandler? = null
     private var getK: GetK? = null
 
@@ -155,10 +156,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val aboutLayout = findViewById<View>(R.id.aboutLayout) as RelativeLayout
         aboutLayout.addView(aboutPage)
 
-        val prevDay = findViewById<View>(R.id.prev_day_button) as FloatingActionButton
-        val nextDay = findViewById<View>(R.id.next_day_button) as FloatingActionButton
-        prevDay.hide()
-        nextDay.hide()
+        prev_day_button.hide()
+        next_day_button.hide()
         layout_of_reps.visibility = View.GONE
         loadingPanel.visibility = View.GONE
         noNetworkLayout.visibility = View.GONE
@@ -177,7 +176,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         return item
     }
 
-    fun restartRepPlanGetter(site: Int = FIRST_SITE) {
+    fun restartRepPlanGetter(site: Int = currentRepPlanSite) {
         loadNewSite(site)
     }
 
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         this.currentRepPlanSite = site
     }
 
-    fun loadNewSite(currentSite: Int, searchForToday: Boolean = false) {
+    fun loadNewSite(currentSite: Int = this.currentRepPlanSite, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
             //onPreExecution
             val loadingDialog = LoadingDialog(this@MainActivity)
@@ -195,21 +194,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             GlobalScope.launch(Dispatchers.IO) {
                 getK = GetK(currentSite, searchForToday)
 
-                //Can't use normal renderTableWithSearch here because isn't same thread anymore exception, still need normal function for search
-                fun getTableWithSearch(search: String, getK: GetK?): List<RepPlanLine> {
-                    if (search.isEmpty()) {
-                        return getK?.parseAndStoreRepPageTable() ?: emptyList()
-                    } else {
-                        return getK?.startSearch(search) ?: emptyList()
-                    }
-                }
-                fun renderTableWithSearch(search: String, getK: GetK?) {
-                    val tableToShow = getTableWithSearch(search, getK)
-                    showTable(tableToShow)
-                }
-                renderTableWithSearch(search,getK)
             }.join()
-
+            renderTableWithSearch(search,getK)
+            getK?.updateTitleBarTitle(this@MainActivity)
             loadingDialog.close()
         }
     }
