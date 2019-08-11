@@ -98,8 +98,16 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
     private fun parseAndStoreDataInLine(allDataInCurrentLine: Elements, lastSetHour: String, isSearch: Boolean): Option<RepPlanLine> {
         if (allDataInCurrentLine.size == 0) return Option.empty()
 
+        val hour = if (isSearch) { //Show everywhere hour if in search
+            lastSetHour
+        } else if (allDataInCurrentLine[0].text().replace("\u00A0","") == "") { // == weird space char 160
+            "  " //So layout in every line the same
+        } else {
+            allDataInCurrentLine[0].text()
+        }
+
         val line = RepPlanLine(
-                hour = if (isSearch) lastSetHour else allDataInCurrentLine[0].text(), //Show everywhere hour if in search
+                hour = hour,
                 teacher = allDataInCurrentLine[1].text(),
                 subject = allDataInCurrentLine[2].text(),
                 room = allDataInCurrentLine[3].text(),
@@ -126,8 +134,8 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
             }
 
             // Store last hour that was set
-            if (!(EinzelnZeile.toTypedArray()[0] as Element).text().replace("\u00A0", "").isEmpty()) {
-                lastSetHour = (EinzelnZeile.toTypedArray()[0] as Element).text().replace("\u00A0", "")
+            if (!(EinzelnZeile.toTypedArray()[0] as Element).text().replace("\u00A0", "").trim().isEmpty()) {
+                lastSetHour = (EinzelnZeile.toTypedArray()[0] as Element).text().trim().replace("\u00A0", "")
             }
 
             for (data in EinzelnZeile) {

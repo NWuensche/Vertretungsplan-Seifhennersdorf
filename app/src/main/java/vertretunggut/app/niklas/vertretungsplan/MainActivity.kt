@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private val FIRST_SITE = 1
     var currentRepPlanSite = FIRST_SITE
     private var getK: Plan? = null
-    //TODO Fix UI Hours Format
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
