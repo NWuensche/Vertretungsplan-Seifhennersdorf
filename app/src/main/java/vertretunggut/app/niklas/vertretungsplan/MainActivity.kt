@@ -35,16 +35,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private val FIRST_SITE = 1
     var currentRepPlanSite = FIRST_SITE
     private var getK: Plan? = null
-
+    //TODO Fix UI Hours
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        currentRepPlanSite = FIRST_SITE
+        MainActivityWrapper(this).handleUINetwork(reloadPlan = false)// Otherwise searchForToday will get messy
 
         loadNewSite(currentRepPlanSite, true)
-
-        MainActivityWrapper(this).handleUINetwork()
     }
 
     //TODO search drin title wrong

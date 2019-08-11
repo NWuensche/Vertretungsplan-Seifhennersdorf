@@ -79,7 +79,7 @@ class MainActivityWrapper(private val activity: MainActivity) {
         activity.noNetworkRetry.setOnClickListener { handleUINetwork() }
     }
 
-    fun disableNoNetworkView() {
+    fun disableNoNetworkView(reloadPlan: Boolean) {
         activity.noNetworkLayout.visibility = View.GONE
 
 
@@ -88,12 +88,12 @@ class MainActivityWrapper(private val activity: MainActivity) {
 
         showMoveButtons()
 
-        activity.restartRepPlanGetter()
+        if (reloadPlan) activity.restartRepPlanGetter()
     }
 
-    fun handleUINetwork() {
+    fun handleUINetwork(reloadPlan: Boolean = true) {
         if (NoNetworkHandler(activity).isNetworkAvailable()) {
-            disableNoNetworkView()
+            disableNoNetworkView(reloadPlan)
         } else {
             showNoInternetView()
         }

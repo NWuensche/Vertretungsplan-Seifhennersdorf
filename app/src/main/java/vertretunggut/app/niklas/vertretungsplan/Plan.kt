@@ -53,6 +53,7 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
         activity.currentRepPlanSite = currentSite
     }
 
+    //TODO Difference modulo wrong when today before first rep plan date
     private fun differenceToToday(repPlanHTML: RepPlanDocumentDecorator): Int {
         val WochenTagHeute = DayOfWeek.todaysDayOfWeek
         val WochenTagVer = DayOfWeek.getDayOfWeekOfRepPlan(repPlanHTML)
