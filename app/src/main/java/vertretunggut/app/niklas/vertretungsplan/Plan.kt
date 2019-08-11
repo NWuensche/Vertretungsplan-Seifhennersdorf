@@ -46,6 +46,8 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                 }
             }
 
+
+
         } else {
             repPlanDecorator = firstDoc.map { RepPlanDocumentDecorator(it) }
             repPlanTable = repPlanDecorator.map { it.repPageTable }
