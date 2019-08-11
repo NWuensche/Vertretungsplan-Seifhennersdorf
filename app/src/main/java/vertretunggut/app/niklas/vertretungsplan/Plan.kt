@@ -41,6 +41,7 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                             }
                     )
                 } else {
+                    repPlanTable = Some(firstRepPlanHTML.repPageTable)
                     firstRepPlanHTML
                 }
             }
@@ -169,7 +170,7 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
         if (nothingToShow(somethingInTable)) {
             headerTitle = "Kein Inhalt"
             if (!internetConnected) {
-                headerTitle = "Keine Internetverbindung"
+                headerTitle = "Kein Internet"
             }
             createDialogAndMaybeDisableButton(titleBar, parent)
         } else {
