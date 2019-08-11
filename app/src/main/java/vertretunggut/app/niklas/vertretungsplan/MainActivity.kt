@@ -145,10 +145,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         return item
     }
 
-    fun restartRepPlanGetter(site: Int = currentRepPlanSite) {
-        loadNewSite(site)
-    }
-
     fun loadNewSite(currentSite: Int = this.currentRepPlanSite, searchForToday: Boolean = false) {
         GlobalScope.launch (Dispatchers.Main) {
             val loadingDialog = LoadingDialog(this@MainActivity)
