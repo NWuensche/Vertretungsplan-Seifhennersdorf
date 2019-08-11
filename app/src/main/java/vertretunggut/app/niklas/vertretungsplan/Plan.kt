@@ -155,6 +155,8 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
         var headerTitle: String
         if (!internetConnected) {
             titleBar.hideMoveButtons()
+        } else {
+            titleBar.showMoveButtons()
         }
 
         val somethingInTable = parent.list_view.adapter.count != 0
