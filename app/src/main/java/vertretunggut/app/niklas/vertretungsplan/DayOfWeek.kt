@@ -44,29 +44,25 @@ enum class DayOfWeek constructor(val dayOfWeek: Int) {
         }
 
         private fun parseStringToDate(date: String): Date? {
-            var dateParser: Date? = null // TODO besser
-
-            try {
-                dateParser = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY).parse(date)
+            return try {
+                SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY).parse(date)
             } catch (e: ParseException) {
                 e.printStackTrace()
+                null
             }
-
-            return dateParser
         }
 
         private fun getParsedWeekday(dayOfWeek: Int): DayOfWeek? {
             // Caution: 1st day is Sunday
-            when (dayOfWeek) {
-                2 -> return DayOfWeek.MONDAY
-                3 -> return DayOfWeek.TUESDAY
-                4 -> return DayOfWeek.WEDNESDAY
-                5 -> return DayOfWeek.THURSDAY
-                6 -> return DayOfWeek.FRIDAY
-                7 -> return DayOfWeek.WEEKEND
-                1 -> return DayOfWeek.WEEKEND
+            return when (dayOfWeek) {
+                2 -> MONDAY
+                3 -> TUESDAY
+                4 -> WEDNESDAY
+                5 -> THURSDAY
+                6 -> FRIDAY
+                1,7 -> WEEKEND
+                else -> null
             }
-            return null // TODO besser
         }
 
         val todaysDayOfWeek: DayOfWeek?

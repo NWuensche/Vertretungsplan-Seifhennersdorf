@@ -43,7 +43,6 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                 } else {
                     firstRepPlanHTML
                 }
-                //TODO Return currentSite
             }
 
         } else {
@@ -78,11 +77,9 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                 } catch (e: IOException) {
                     Option.empty()
                 }
-        Log.e("TEST", if (docO.isDefined()) "DEF" else "NOT Def")
+        Log.e("TEST", if (docO.isDefined()) "New Plan downloaded" else "Plan not definied")
         return docO
     }
-
-    //TODO Buttons don't get reenabled
 
     fun parseAndStoreRepPageTable(): List<RepPlanLine> {
        return repPlanTable.map { table ->
@@ -92,7 +89,6 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                 parseAndStoreDataInLine(allDataInCurrentLine, "", false)
                     }
                     .flatMap { it.toList() } //filter empty options
-           //TODO Make easier
         }
                 .getOrElse { emptyList() }
 
@@ -161,7 +157,7 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
         }
 
         val somethingInTable = parent.list_view.adapter.count != 0
-        //TODO Problem when in search and next day with titlebar
+        //TODO Problem when in search and next day with titlebar title
         if (nothingToShow(somethingInTable)) {
             headerTitle = "Kein Inhalt"
             if (!internetConnected) {
@@ -207,5 +203,3 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
     }
 
 }
-
-//TODO How often DEF in log?

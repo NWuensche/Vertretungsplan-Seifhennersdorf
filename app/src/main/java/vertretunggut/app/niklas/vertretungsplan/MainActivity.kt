@@ -31,11 +31,11 @@ fun Context.toast(message: CharSequence) =
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     var search = ""
-        private set //TODO Better
+        private set
     private val FIRST_SITE = 1
     var currentRepPlanSite = FIRST_SITE
     private var getK: Plan? = null
-    //TODO Fix UI Hours
+    //TODO Fix UI Hours Format
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,8 +44,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         loadNewSite(currentRepPlanSite, true)
     }
-
-    //TODO search drin title wrong
 
     fun increaseCurrentRepPlanSite() {
         currentRepPlanSite++
@@ -60,9 +58,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         val searchItem = menu.findItem(R.id.search)
-        //TODO Old
-        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        searchView.setOnQueryTextListener(this) //TODO Ist das nötig
+
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(this)
 
         return true
     }
