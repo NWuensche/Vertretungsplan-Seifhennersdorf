@@ -1,5 +1,6 @@
 package vertretunggut.app.niklas.vertretungsplan
 
+import android.os.Build
 import android.util.Log
 import arrow.core.Option
 import arrow.core.Some
@@ -66,12 +67,22 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
 
     //Doc also empty when no title -> No timetable available
     private fun getDoc(currSite: Int): Option<Document> {
-        val url = "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currSite.html"
+        val url = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            "https://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currSite.html" // P needs https
+        } else {
+            "http://www.gymnasium-seifhennersdorf.de/files/V_DH_00$currSite.html"
+        }
+
+        val referrer = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            "https://www.google.de"
+        } else {
+            "http://www.google.de"
+        }
         val docO: Option<Document> =
                 try {
                     val doc = Jsoup.connect(url)
                         .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.de")
+                        .referrer(referrer)
                         .ignoreHttpErrors(true)
                         .get()
                         Some(doc)
