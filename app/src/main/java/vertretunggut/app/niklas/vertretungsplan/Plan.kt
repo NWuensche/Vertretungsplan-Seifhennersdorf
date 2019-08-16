@@ -30,15 +30,24 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
                     val newDoc = getDoc(approxCurrentSite)
                     //When approximated current day is not available, use the old site again
                     newDoc.fold(
+                            // Not there
                             {
                                 repPlanTable = Some(firstRepPlanHTML.repPageTable)
                                 firstRepPlanHTML
                             },
+                            // Is there
                             { nDoc ->
-                                currentSite = approxCurrentSite
-                                val newRepPlan = RepPlanDocumentDecorator(nDoc)
-                                repPlanTable = Some(newRepPlan.repPageTable)
-                                newRepPlan
+                                if (nDoc.select(".list-table-caption").text() == "") {
+                                    //No Title -> No Plan -> Same as "Not there" in 1st fold fkt.
+                                    repPlanTable = Some(firstRepPlanHTML.repPageTable)
+                                    firstRepPlanHTML
+                                } else {
+                                    //Plan there -> goto this one
+                                    currentSite = approxCurrentSite
+                                    val newRepPlan = RepPlanDocumentDecorator(nDoc)
+                                    repPlanTable = Some(newRepPlan.repPageTable)
+                                    newRepPlan
+                                }
                             }
                     )
                 } else {

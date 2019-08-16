@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 /**
  * Created by nwuensche on 26.09.16.
  */
+// TODO Error Message when connected with VPN
 class NoNetworkHandler(private val activity: MainActivity) {
 
     fun isNetworkAvailable(): Boolean {

@@ -153,6 +153,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             GlobalScope.launch(Dispatchers.IO) {
                 getK = Plan(this@MainActivity , searchForToday)
             }.join()
+            // Block Buttons until new page displayed to prevent double clicking
 
             renderTableWithSearch(search,getK)
             getK?.updateTitleBarTitle(this@MainActivity, NoNetworkHandler(this@MainActivity).isNetworkAvailable())
