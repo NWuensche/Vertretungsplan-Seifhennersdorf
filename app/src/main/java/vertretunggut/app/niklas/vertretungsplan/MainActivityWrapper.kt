@@ -1,6 +1,7 @@
 package vertretunggut.app.niklas.vertretungsplan
 
 import android.view.View
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**

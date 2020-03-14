@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/.idea/Vertretungsplan-Seifhennersdorf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/Vertretungsplan-Seifhennersdorf-app.iml" filepath="$PROJECT_DIR$/app/Vertretungsplan-Seifhennersdorf-app.iml" group="Vertretungsplan-Seifhennersdorf/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nwuensche-Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/nwuensche-Vertretungsplan-Seifhennersdorf.iml" group="Vertretungsplan-Seifhennersdorf" />
     </modules>
   </component>
 </project>
