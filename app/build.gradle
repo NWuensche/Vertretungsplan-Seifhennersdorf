@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.android.material:material:1.3.0-alpha02' //Floating Action Button
+    implementation 'com.google.android.material:material:1.3.0-alpha03' //Floating Action Button
 
     testImplementation 'junit:junit:4.12'
     implementation 'androidx.appcompat:appcompat:1.2.0'
