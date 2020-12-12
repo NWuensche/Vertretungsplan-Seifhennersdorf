@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "niklas.app.vertretunggut",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 19,
+      "versionName": "3.11",
+      "enabled": true,
+      "outputFile": "app-release.apk"
+    }
+  ]
+}
