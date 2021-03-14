@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/-home-nwuensche-Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/-home-nwuensche-Vertretungsplan-Seifhennersdorf.iml" group="Vertretungsplan-Seifhennersdorf" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-home-nwuensche-Vertretungsplan-Seifhennersdorf~1.iml" filepath="$PROJECT_DIR$/.idea/modules/-home-nwuensche-Vertretungsplan-Seifhennersdorf~1.iml" group="Vertretungsplan-Seifhennersdorf" />
-      <module fileurl="file://$PROJECT_DIR$/Ver.iml" filepath="$PROJECT_DIR$/Ver.iml" group="Ver" />
-      <module fileurl="file://$PROJECT_DIR$/app/Ver-app.iml" filepath="$PROJECT_DIR$/app/Ver-app.iml" group="Ver/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/.idea/Vertretungsplan-Seifhennersdorf.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/Vertretungsplan-Seifhennersdorf-app.iml" filepath="$PROJECT_DIR$/app/Vertretungsplan-Seifhennersdorf-app.iml" group="Vertretungsplan-Seifhennersdorf/app" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/home-nwuensche-Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/home-nwuensche-Vertretungsplan-Seifhennersdorf.iml" group="Vertretungsplan-Seifhennersdorf" />
-      <module fileurl="file://$PROJECT_DIR$/app/home-nwuensche-Vertretungsplan-Seifhennersdorf-app.iml" filepath="$PROJECT_DIR$/app/home-nwuensche-Vertretungsplan-Seifhennersdorf-app.iml" group="Vertretungsplan-Seifhennersdorf/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/home-nwuensche-Vertretungsplan-Seifhennersdorf-app~1.iml" filepath="$PROJECT_DIR$/.idea/modules/app/home-nwuensche-Vertretungsplan-Seifhennersdorf-app~1.iml" group="Vertretungsplan-Seifhennersdorf/app" />
-      <module fileurl="file://$PROJECT_DIR$/nwuensche-Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/nwuensche-Vertretungsplan-Seifhennersdorf.iml" group="Vertretungsplan-Seifhennersdorf" />
-      <module fileurl="file://$PROJECT_DIR$/app/nwuensche-Vertretungsplan-Seifhennersdorf-app.iml" filepath="$PROJECT_DIR$/app/nwuensche-Vertretungsplan-Seifhennersdorf-app.iml" group="Vertretungsplan-Seifhennersdorf/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Vertretungsplan-Seifhennersdorf.iml" filepath="$PROJECT_DIR$/.idea/modules/Vertretungsplan-Seifhennersdorf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Vertretungsplan-Seifhennersdorf.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Vertretungsplan-Seifhennersdorf.app.iml" />
     </modules>
   </component>
 </project>
