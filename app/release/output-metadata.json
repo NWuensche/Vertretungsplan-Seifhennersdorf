@@ -5,13 +5,13 @@
     "kind": "Directory"
   },
   "applicationId": "niklas.app.vertretunggut",
-  "variantName": "processReleaseResources",
+  "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 22,
-      "versionName": "3.14",
+      "versionCode": 23,
+      "versionName": "3.2.1",
       "outputFile": "app-release.apk"
     }
   ]
