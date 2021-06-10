@@ -13,14 +13,11 @@ import androidx.appcompat.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,13 +33,19 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private val FIRST_SITE = 1
     var currentRepPlanSite = FIRST_SITE
     private var getK: Plan? = null
+    val main_layout: FrameLayout by lazy {findViewById(R.id.main_layout)}
+    val prev_day_button: FloatingActionButton by lazy {findViewById(R.id.prev_day_button)}
+    val next_day_button: FloatingActionButton by lazy {findViewById(R.id.next_day_button)}
+    val layout_of_reps: LinearLayout by lazy {findViewById(R.id.layout_of_reps)}
+    val loadingPanel: RelativeLayout by lazy {findViewById(R.id.loadingPanel)}
+    val noNetworkLayout: LinearLayout by lazy {findViewById(R.id.noNetworkLayout)}
+    val list_view: ListView by lazy {findViewById(R.id.list_view)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         MainActivityWrapper(this).handleUINetwork(reloadPlan = false)// Otherwise searchForToday will get messy
-
         loadNewSite(currentRepPlanSite, true)
     }
 
@@ -75,12 +78,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         super.onConfigurationChanged(newConfig)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            val main = main_layout
-            //TODO 2x Deprecated
-            main.setBackgroundDrawable(resources.getDrawable(R.drawable.school_horizontal))
+            main_layout.setBackgroundDrawable(resources.getDrawable(R.drawable.school_horizontal))
         } else {
-            val main = findViewById<View>(R.id.main_layout) as FrameLayout
-            main.setBackgroundDrawable(resources.getDrawable(R.drawable.school_vertical))
+            main_layout.setBackgroundDrawable(resources.getDrawable(R.drawable.school_vertical))
         }
     }
 

@@ -5,7 +5,6 @@ import android.util.Log
 import arrow.core.Option
 import arrow.core.Some
 import arrow.core.getOrElse
-import kotlinx.android.synthetic.main.activity_main.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

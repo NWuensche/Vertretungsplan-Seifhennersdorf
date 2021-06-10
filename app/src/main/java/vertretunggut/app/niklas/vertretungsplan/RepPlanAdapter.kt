@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import kotlinx.android.synthetic.main.list_row.view.*
 
 import java.util.ArrayList
 
@@ -21,13 +20,13 @@ class RepPlanAdapter(context: Context, lines: ArrayList<RepPlanLine>) : ArrayAda
         val line = getItem(position)
 
         convertView!!.run {
-            hour.text = line!!.hour
-            teacher.text = line.teacher
-            subject.text = line.subject
-            room.text = line.room
-            schoolClass.text = line.schoolClass
-            type.text = line.type
-            message.text = line.message
+            findViewById<TextView>(R.id.hour).text = line!!.hour
+            findViewById<TextView>(R.id.teacher).text = line.teacher
+            findViewById<TextView>(R.id.subject).text = line.subject
+            findViewById<TextView>(R.id.room).text = line.room
+            findViewById<TextView>(R.id.schoolClass).text = line.schoolClass
+            findViewById<TextView>(R.id.type).text = line.type
+            findViewById<TextView>(R.id.message).text = line.message
         }
         return convertView
     }

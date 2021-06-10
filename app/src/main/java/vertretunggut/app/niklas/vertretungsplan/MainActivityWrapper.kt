@@ -1,8 +1,8 @@
 package vertretunggut.app.niklas.vertretungsplan
 
 import android.view.View
+import android.widget.Button
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * Created by nwuensche on 26.09.16.
@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivityWrapper(private val activity: MainActivity) {
     private val prevDay = activity.prev_day_button
     private val nextDay = activity.next_day_button
+    private val noNetworkRetry = activity.findViewById<Button>(R.id.noNetworkRetry)
 
     init {
         prevDay.setOnClickListener { previousDayButtonPressed() }
@@ -79,7 +80,7 @@ class MainActivityWrapper(private val activity: MainActivity) {
             hideMoveButtons()
             setTitle("Kein Internet")
         }
-        activity.noNetworkRetry.setOnClickListener { handleUINetwork() }
+        noNetworkRetry.setOnClickListener { handleUINetwork() }
     }
 
     /*

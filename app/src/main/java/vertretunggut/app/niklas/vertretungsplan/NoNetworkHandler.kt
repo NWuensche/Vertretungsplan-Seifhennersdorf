@@ -3,7 +3,6 @@ package vertretunggut.app.niklas.vertretungsplan
 import android.content.Context
 import android.net.ConnectivityManager
 import android.view.View
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 /**
