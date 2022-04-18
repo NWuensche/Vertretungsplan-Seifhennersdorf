@@ -88,6 +88,7 @@ class Plan (activity: MainActivity, searchForToday: Boolean) {
         }
         val docO: Option<Document> =
                 try {
+                    //If does not work with Android 12, then first fix Date&Time in Device
                     val doc = Jsoup.connect(url)
                         .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                         .referrer(referrer)
